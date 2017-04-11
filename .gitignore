@@ -1,0 +1,6 @@
+obj
+*.dll
+*.exe
+*.cfg
+src/StardewCutsceneEditor.depend
+src/StardewCutsceneEditor_build_log.html
