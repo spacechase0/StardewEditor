@@ -24,6 +24,11 @@ class Map
         
         void changeCurrentMap( const std::string& map );
         std::string getCurrentMap() const;
+        
+        enum ClickMode
+        {
+            Panning,
+        } clickMode = Panning;
     
     private:
         Editor& editor;

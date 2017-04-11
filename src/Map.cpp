@@ -24,8 +24,13 @@ void Map::update( const sf::Event& event )
     {
         if ( event.mouseButton.button == sf::Mouse::Left )
         {
-            dragging = true;
-            dragFrom = editor.window.mapPixelToCoords( sf::Vector2i( event.mouseButton.x, event.mouseButton.y ) );
+            switch ( clickMode )
+            {
+                case Panning:
+                    dragging = true;
+                    dragFrom = editor.window.mapPixelToCoords( sf::Vector2i( event.mouseButton.x, event.mouseButton.y ) );
+                    break;
+            }
         }
     }
 }
