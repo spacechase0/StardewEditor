@@ -1,6 +1,7 @@
 #ifndef MAP_HPP
 #define MAP_HPP
 
+#include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Texture.hpp>
 #include <string>
 
@@ -29,6 +30,10 @@ class Map
         
         std::string current;
         sf::Texture tex;
+        sf::Sprite spr;
+        
+        bool dragging = false;
+        sf::Vector2f dragFrom;
 };
 
 #endif // MAP_HPP

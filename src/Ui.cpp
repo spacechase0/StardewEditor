@@ -35,6 +35,11 @@ void Ui::render( sf::RenderWindow& window )
     ImGui::Render();
 }
 
+bool Ui::isMouseOutside() const
+{
+    return !ImGui::IsMouseHoveringAnyWindow();
+}
+
 void Ui::initMapList()
 {
     maps.clear();

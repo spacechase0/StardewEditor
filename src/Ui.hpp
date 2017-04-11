@@ -21,6 +21,8 @@ class Ui
         void update();
         void update( const sf::Event& event );
         void render( sf::RenderWindow& window );
+        
+        bool isMouseOutside() const;
     
     private:
         Editor& editor;
