@@ -19,6 +19,8 @@ Editor::Editor( int argc, char* argv[] )
     if ( fs::exists( configPath ) )
         config.loadFromFile( configPath.string() );
     else config.saveToFile( CONFIG_FILE );
+    
+    util::Logger::setName( "Main log", "log.txt" );
 }
 
 Editor::~Editor()

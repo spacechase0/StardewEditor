@@ -1,6 +1,8 @@
 #ifndef GLOBAL_HPP
 #define GLOBAL_HPP
 
+#include <util/Logger.hpp>
+
 namespace boost
 {
     namespace filesystem

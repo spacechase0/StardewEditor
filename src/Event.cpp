@@ -1,10 +1,10 @@
 #include "Event.hpp"
 
+#include <algorithm>
 #include <cstdlib>
 #include <fstream>
 #include <util/String.hpp>
 
-#include"iostream"
 namespace
 {
     std::vector< Event::Precondition > parsePreconditions( const std::string& str )
@@ -16,10 +16,18 @@ namespace
         {
             Event::Precondition prec;
             prec.type = token[ 0 ];
-            if ( Event::PreconditionType::types[ prec.type ].paramTypes.size() > 0 )
+            
+            const auto& paramTypes = Event::PreconditionType::types[ prec.type ].paramTypes;
+            if ( paramTypes.size() > 0 )
             {
-                prec.params = util::tokenize( str.substr( 2 ), " " );
+                prec.params = util::tokenize( token.substr( 2 ), " " );
+                if ( prec.params.size() != paramTypes.size() &&
+                     std::find( paramTypes.begin(), paramTypes.end(), Event::ParamType::EnumMany ) == paramTypes.end() )
+                {
+                    util::log( "[WARN] Precondition parameters for \"$\" doesn't match its type. ($ vs $)\n", token, prec.params.size(), Event::PreconditionType::types[ prec.type ].paramTypes.size() );
+                }
             }
+            
             ret.push_back(  prec );
         }
         
