@@ -114,6 +114,16 @@ void Ui::mainMenu()
             }
             ImGui::EndMenu();
         }
+        if ( ImGui::BeginMenu( "Reload" ) )
+        {
+            bool refresh = false;
+            ImGui::MenuItem( "Precondition types", nullptr, &refresh );
+            if ( refresh )
+            {
+                Event::PreconditionType::types = Event::PreconditionType::loadTypes( ( fs::path( editor.config.getDataFolder() ) / "preconditions.txt" ).string() );
+            }
+            ImGui::EndMenu();
+        }
         
         ImGui::EndMainMenuBar();
     }
