@@ -2,10 +2,12 @@
 #define EDITOR_HPP
 
 #include <set>
-#include <SFML/Graphics/Texture.hpp>
+#include <SFML/Graphics/RenderWindow.hpp>
 #include <string>
 
 #include "Config.hpp"
+#include "Map.hpp"
+#include "Ui.hpp"
 
 namespace sf
 {
@@ -15,29 +17,20 @@ namespace sf
 class Editor
 {
     public:
+        static const char* CONFIG_FILE;
+        
         Editor( int argc,  char* argv[] );
         ~Editor();
         
         void run();
         
-        void changeCurrentMap( const std::string& map );
-        
-        static const char* CONFIG_FILE;
         Config config;
+        sf::RenderWindow window;
+        Map map;
+        Ui ui;
     
     private:
         const std::string EXEC_PATH;
-        
-        std::set< std::string > maps;
-        std::set< std::string > eventFiles;
-        
-        std::string currentMap;
-        sf::Texture currentMapTex;
-        
-        void initMapList();
-        
-        void update();
-        void render( sf::RenderWindow& window );
 };
 
 #endif // EDITOR_HPP
