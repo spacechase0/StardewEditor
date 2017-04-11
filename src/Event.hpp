@@ -39,9 +39,13 @@ namespace Event
     
     struct Data
     {
-        int id = 0;
+        // Either id or branch name.
+        int id = -1;
+        std::string branchName;
+        
         std::vector< Precondition > preconditions;
         
+        static Data fromGameFormat( const std::string& line );
         std::string toGameFormat() const;
     };
 }

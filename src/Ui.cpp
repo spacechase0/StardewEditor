@@ -4,6 +4,7 @@
 #include <imgui.h>
 #include <imgui-sfml.h>
 #include <SFML/Graphics/Sprite.hpp>
+#include <util/String.hpp>
 
 #include "Editor.hpp"
 #include "Event.hpp"
@@ -70,6 +71,38 @@ void Ui::loadEventList( const std::string& map )
 {
     events.clear();
     eventBranches.clear();
+    
+    std::ifstream file( ( fs::path( editor.config.getUnpackedContentFolder() ) / "data" / "Events" / ( map + ".yaml" ) ).string() );
+    if ( !file )
+        return;
+    
+    bool foundContent = false;
+    while ( true )
+    {
+        std::string line;
+        std::getline( file, line );
+        if ( !file )
+            break;
+        
+        if ( !foundContent )
+        {
+            if ( line.length() < 8 || line.substr( 0, 8 ) != "content:" )
+                continue;
+            foundContent = true;
+        }
+        else if ( line.length() >= 4 )
+        {
+            Event::Data event = Event::Data::fromGameFormat( line );
+            if ( event.id != -1 )
+            {
+                events.insert( std::make_pair( event.id, event ) );
+            }
+            else
+            {
+                eventBranches.insert( std::make_pair( event.branchName, event ) );
+            }
+        }
+    }
 }
 
 void Ui::mainMenu()
@@ -109,7 +142,24 @@ void Ui::mainMenu()
                         loadEventList( editor.map.getCurrentMap() );
                 }
                 
-                // ...
+                for ( const auto& event : events )
+                {
+                    bool selected = false;
+                    ImGui::MenuItem( util::toString( event.first ).c_str(), nullptr, &selected, true );
+                    if ( selected )
+                    {
+                    }
+                }
+                
+                for ( const auto& event : eventBranches )
+                {
+                    bool selected = false;
+                    ImGui::MenuItem( event.first.c_str(), nullptr, &selected, true );
+                    if ( selected )
+                    {
+                    }
+                }
+                
                 ImGui::EndMenu();
             }
             ImGui::EndMenu();

@@ -52,4 +52,16 @@ namespace Event
         
         return ret;
     }
+    
+    Data Data::fromGameFormat( const std::string& line )
+    {
+        Data data;
+        data.branchName = line;
+        return data;
+    }
+    
+    std::string Data::toGameFormat() const
+    {
+        return "";
+    }
 }
