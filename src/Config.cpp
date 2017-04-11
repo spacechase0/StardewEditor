@@ -6,7 +6,7 @@
 namespace
 {
     const char* OPT_UNPACKED_CONTENT = "unpacked_content";
-    const char* OPT_MAP_IMAGES = "map_images";
+    const char* OPT_DATA = "data";
 }
 
 Config::Config()
@@ -39,8 +39,8 @@ bool Config::loadFromFile( const std::string& path )
         
         if ( opt == OPT_UNPACKED_CONTENT )
             unpackedContent = val;
-        else if ( opt == OPT_MAP_IMAGES )
-            mapImages = val;
+        else if ( opt == OPT_DATA )
+            dataFolder = val;
     }
     
     return true;
@@ -53,7 +53,7 @@ bool Config::saveToFile( const std::string& path ) const
         return false;
     
     file << util::format( "$=$\n", OPT_UNPACKED_CONTENT, unpackedContent );
-    file << util::format( "$=$\n", OPT_MAP_IMAGES, mapImages );
+    file << util::format( "$=$\n", OPT_DATA, dataFolder );
     
     return true;
 }
@@ -68,18 +68,18 @@ std::string Config::getUnpackedContentFolder() const
     return unpackedContent;
 }
 
-void Config::setMapImagesFolder( const std::string& path )
+void Config::setDataFolder( const std::string& path )
 {
-    mapImages = path;
+    dataFolder = path;
 }
 
-std::string Config::getMapImagesFolder() const
+std::string Config::getDataFolder() const
 {
-    return mapImages;
+    return dataFolder;
 }
 
 void Config::reset()
 {
     unpackedContent = "./Content";
-    mapImages = "./maps";
+    dataFolder = "./data";
 }

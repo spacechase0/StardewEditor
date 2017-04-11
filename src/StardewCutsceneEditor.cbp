@@ -62,6 +62,8 @@
 		<Unit filename="Config.hpp" />
 		<Unit filename="Editor.cpp" />
 		<Unit filename="Editor.hpp" />
+		<Unit filename="Event.cpp" />
+		<Unit filename="Event.hpp" />
 		<Unit filename="Global.hpp" />
 		<Unit filename="Map.cpp" />
 		<Unit filename="Map.hpp" />

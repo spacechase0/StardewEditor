@@ -6,6 +6,7 @@
 #include <SFML/Graphics/Sprite.hpp>
 
 #include "Editor.hpp"
+#include "Event.hpp"
 
 Ui::Ui( Editor& theEditor )
 :   editor( theEditor )
@@ -30,6 +31,8 @@ void Ui::render( sf::RenderWindow& window )
     {
         initMapList();
         firstUpdate = false;
+        
+        Event::PreconditionType::types = Event::PreconditionType::loadTypes( ( fs::path( editor.config.getDataFolder() ) / "preconditions.txt" ).string() );
     }
     
     ImGui::Render();
@@ -43,7 +46,7 @@ bool Ui::isMouseOutside() const
 void Ui::initMapList()
 {
     maps.clear();
-    for ( fs::directory_iterator it( editor.config.getMapImagesFolder() );
+    for ( fs::directory_iterator it( fs::path( editor.config.getDataFolder() ) / "maps" );
           it != fs::directory_iterator(); ++it )
     {
         fs::path file = ( * it );
@@ -61,6 +64,12 @@ void Ui::initMapList()
             eventFiles.insert( file.stem().string() );
         }
     }
+}
+
+void Ui::loadEventList( const std::string& map )
+{
+    events.clear();
+    eventBranches.clear();
 }
 
 void Ui::mainMenu()
@@ -85,9 +94,22 @@ void Ui::mainMenu()
                     if ( selected && editor.map.getCurrentMap() != map )
                     {
                         editor.map.changeCurrentMap( map );
+                        loadEventList( map );
                     }
                 }
                 
+                ImGui::EndMenu();
+            }
+            if ( ImGui::BeginMenu( "Events" ) )
+            {
+                bool refresh = false;
+                ImGui::MenuItem( "(Refresh...)", nullptr, &refresh );
+                if ( refresh )
+                {
+                        loadEventList( editor.map.getCurrentMap() );
+                }
+                
+                // ...
                 ImGui::EndMenu();
             }
             ImGui::EndMenu();

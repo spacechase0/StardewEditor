@@ -15,14 +15,14 @@ class Config
         void setUnpackedContentFolder( const std::string& path );
         std::string getUnpackedContentFolder() const;
         
-        void setMapImagesFolder( const std::string& path );
-        std::string getMapImagesFolder() const;
+        void setDataFolder( const std::string& path );
+        std::string getDataFolder() const;
         
         void reset();
     
     private:
         std::string unpackedContent;
-        std::string mapImages;
+        std::string dataFolder;
 };
 
 #endif // CONFIG_HPP
