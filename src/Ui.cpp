@@ -19,6 +19,12 @@ void Ui::update()
     ImGui::SFML::Update( editor.window, delta.restart() );
     
     mainMenu();
+    if ( active )
+    {
+        info();
+        preconditions();
+        commands();
+    }
 }
 
 void Ui::update( const sf::Event& event )
@@ -71,6 +77,7 @@ void Ui::loadEventList( const std::string& map )
 {
     events.clear();
     eventBranches.clear();
+    active = nullptr;
     
     std::ifstream file( ( fs::path( editor.config.getUnpackedContentFolder() ) / "data" / "Events" / ( map + ".yaml" ) ).string() );
     if ( !file )
@@ -145,21 +152,23 @@ void Ui::mainMenu()
                         loadEventList( editor.map.getCurrentMap() );
                 }
                 
-                for ( const auto& event : events )
+                for ( auto& event : events )
                 {
-                    bool selected = false;
+                    bool selected = active == &event.second;
                     ImGui::MenuItem( util::toString( event.first ).c_str(), nullptr, &selected, true );
                     if ( selected )
                     {
+                        active = &event.second;
                     }
                 }
                 
-                for ( const auto& event : eventBranches )
+                for ( auto& event : eventBranches )
                 {
-                    bool selected = false;
+                    bool selected = active == &event.second;
                     ImGui::MenuItem( event.first.c_str(), nullptr, &selected, true );
                     if ( selected )
                     {
+                        active = &event.second;
                     }
                 }
                 
@@ -180,4 +189,44 @@ void Ui::mainMenu()
         
         ImGui::EndMainMenuBar();
     }
+}
+
+void Ui::info()
+{
+    ImGui::SetNextWindowPos( ImVec2( 25, 25 ), ImGuiSetCond_Appearing );
+    ImGui::SetNextWindowSize( ImVec2( 250, 100 ), ImGuiSetCond_Appearing );
+    if ( ImGui::Begin( "Info" ) )
+    {
+        if ( active->id != -1 )
+            ImGui::InputInt( "Event ID", &active->id );
+        else
+            ImGui::InputText( "Event Name", &active->branchName[ 0 ], 31 );
+        
+        ImGui::InputText( "Music", &active->music[ 0 ], 31 );
+        ImGui::InputInt2( "Viewport", &active->viewport.x );
+    }
+    ImGui::End();
+}
+
+void Ui::preconditions()
+{
+    if ( active->id == -1 )
+        return;
+    
+    ImGui::SetNextWindowPos( ImVec2( 25, 150 ), ImGuiSetCond_Appearing );
+    ImGui::SetNextWindowSize( ImVec2( 250, 200 ), ImGuiSetCond_Appearing );
+    if ( ImGui::Begin( "Preconditions" ) )
+    {
+    }
+    ImGui::End();
+}
+
+void Ui::commands()
+{
+    ImGui::SetNextWindowPos( ImVec2( editor.window.getSize().x - 25 - 250, 25 ), ImGuiSetCond_Appearing );
+    ImGui::SetNextWindowSize( ImVec2( 250, 500 ), ImGuiSetCond_Appearing );
+    if ( ImGui::Begin( "Commands" ) )
+    {
+    }
+    ImGui::End();
 }

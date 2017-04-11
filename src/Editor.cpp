@@ -30,7 +30,7 @@ Editor::~Editor()
 
 void Editor::run()
 {
-    window.create( sf::VideoMode( 640, 480 ), "Stardew Cutscene Editor" );
+    window.create( sf::VideoMode( 800, 600 ), "Stardew Cutscene Editor" );
     window.setFramerateLimit( 60 );
     ImGui::SFML::Init( window );
     

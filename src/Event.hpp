@@ -54,6 +54,8 @@ namespace Event
     
     struct Data
     {
+        Data();
+        
         // Either id or branch name.
         int id = -1;
         std::string branchName;

@@ -118,6 +118,12 @@ namespace Event
         return ret;
     }
     
+    Data::Data()
+    {
+        branchName.resize( 32, '\0' );
+        music.resize( 32, '\0' );
+    }
+    
     Data Data::fromGameFormat( const std::string& line )
     {
         std::size_t i = 0;

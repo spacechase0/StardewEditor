@@ -36,11 +36,15 @@ class Ui
         std::set< std::string > eventFiles;
         std::map< int, Event::Data > events;
         std::map< std::string, Event::Data > eventBranches;
+        Event::Data* active = nullptr;
         
         void initMapList();
         void loadEventList( const std::string& map );
         
         void mainMenu();
+        void info();
+        void preconditions();
+        void commands();
 };
 
 #endif // UI_HPP
