@@ -33,6 +33,39 @@ namespace
         
         return ret;
     }
+    
+    std::vector< Event::Actor > parseActors( const std::string& str )
+    {
+        std::vector< Event::Actor > ret;
+        
+        auto tokens = util::tokenize( str, " " );
+        for ( std::size_t i = 0; i < tokens.size() / 4; ++i )
+        {
+            Event::Actor actor;
+            actor.name = tokens[ i * 4 + 0 ];
+            actor.pos = sf::Vector2i( util::fromString< int >( tokens[ i * 4 + 1 ] ), util::fromString< int >( tokens[ i * 4 + 2 ] ) );
+            actor.facing = util::fromString< int >( tokens[ i * 4 + 3 ] );
+            
+            ret.push_back( actor );
+        }
+        
+        return ret;
+    }
+    
+    std::vector< Event::Command > parseCommands( const std::string& str, int skip )
+    {
+        std::vector< Event::Command > ret;
+        
+        int i = 0;
+        auto tokens = util::tokenize( str, "/" );
+        for ( const std::string& token : tokens )
+        {
+            if ( i++ < skip ) continue;
+            std::string cmd = token.substr( 0, token.find( ' ' ) );
+        }
+        
+        return ret;
+    }
 }
 
 namespace Event
@@ -121,12 +154,24 @@ namespace Event
         if ( slash == std::string::npos )
         {
             data.branchName = key;
+            parseCommands( value, 0 );
         }
         else
         {
             data.id = util::fromString< int >( key.substr( 0, slash ) );
             data.preconditions = parsePreconditions( key.substr( slash + 1 ) );
+            
+            std::size_t s1 = value.find( '/' );
+            std::size_t sp = value.find( ' ', s1 + 1 );
+            std::size_t s2 = value.find( '/', s1 + 1 );
+            std::size_t s3 = value.find( '/', s2 + 1 );
+            data.music = value.substr( 0, s1 );
+            data.viewport = sf::Vector2i( util::fromString< int >( value.substr( s1 + 1, sp - s1 - 1 ) ), 
+                                          util::fromString< int >( value.substr( sp + 1, s2 - sp - 1 ) ) );
+            data.actors = parseActors( value.substr( s2 + 1, s3 - s2 - 1 ) );
+            data.commands = parseCommands( value, 3 );
         }
+        
         
         return data;
     }

@@ -2,6 +2,7 @@
 #define EVENT_HPP
 
 #include <map>
+#include <SFML/System/Vector2.hpp>
 #include <string>
 #include <vector>
 
@@ -38,6 +39,19 @@ namespace Event
         std::vector< std::string > params;
     };
     
+    struct Actor
+    {
+        std::string name;
+        sf::Vector2i pos;
+        int facing;
+    };
+    
+    struct Command
+    {
+        std::string cmd;
+        std::vector< std::string > params;
+    };
+    
     struct Data
     {
         // Either id or branch name.
@@ -45,6 +59,12 @@ namespace Event
         std::string branchName;
         
         std::vector< Precondition > preconditions;
+        
+        std::string music;
+        sf::Vector2i viewport;
+        std::vector< Actor > actors;
+        
+        std::vector< Command > commands;
         
         static Data fromGameFormat( const std::string& line );
         std::string toGameFormat() const;
