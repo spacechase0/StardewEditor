@@ -93,6 +93,9 @@ void Ui::loadEventList( const std::string& map )
         else if ( line.length() >= 4 )
         {
             Event::Data event = Event::Data::fromGameFormat( line );
+            if ( event.id == -1 && event.branchName == "" )
+                continue;
+            
             if ( event.id != -1 )
             {
                 events.insert( std::make_pair( event.id, event ) );

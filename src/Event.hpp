@@ -34,6 +34,7 @@ namespace Event
     
     struct Precondition
     {
+        char type;
         std::vector< std::string > params;
     };
     

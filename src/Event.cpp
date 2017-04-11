@@ -1,7 +1,31 @@
 #include "Event.hpp"
 
+#include <cstdlib>
 #include <fstream>
 #include <util/String.hpp>
+
+#include"iostream"
+namespace
+{
+    std::vector< Event::Precondition > parsePreconditions( const std::string& str )
+    {
+        std::vector< Event::Precondition > ret;
+        
+        auto tokens = util::tokenize( str, "/" );
+        for ( const std::string& token : tokens )
+        {
+            Event::Precondition prec;
+            prec.type = token[ 0 ];
+            if ( Event::PreconditionType::types[ prec.type ].paramTypes.size() > 0 )
+            {
+                prec.params = util::tokenize( str.substr( 2 ), " " );
+            }
+            ret.push_back(  prec );
+        }
+        
+        return ret;
+    }
+}
 
 namespace Event
 {
@@ -55,8 +79,47 @@ namespace Event
     
     Data Data::fromGameFormat( const std::string& line )
     {
+        std::size_t i = 0;
+        for ( ; i < line.length(); ++i )
+        {
+            if ( !std::isspace( line[ i ] ) )
+                break;
+        }
+        
+        std::size_t colon = line.find( ':', i );
+        if ( colon == std::string::npos )
+            return Data();
+        std::string key = line.substr( i, colon - i );
+        
+        std::string value;
+        bool esc = false;
+        for ( i = line.find( '"', colon + 1 ) + 1; i < line.length(); ++i )
+        {
+            char c = line[ i ];
+            if ( c == '"' && !esc )
+                break;
+            else if ( c == '\\' && !esc )
+                esc = true;
+            else
+            {
+                value += c;
+                esc = false;
+            }
+        }
+        
         Data data;
-        data.branchName = line;
+        
+        std::size_t slash = key.find( '/' );
+        if ( slash == std::string::npos )
+        {
+            data.branchName = key;
+        }
+        else
+        {
+            data.id = util::fromString< int >( key.substr( 0, slash ) );
+            data.preconditions = parsePreconditions( key.substr( slash + 1 ) );
+        }
+        
         return data;
     }
     
