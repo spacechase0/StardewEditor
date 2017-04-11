@@ -87,7 +87,7 @@ void Editor::update()
                 
                 for ( const auto& map : maps )
                 {
-                    bool selected = false;
+                    bool selected = currentMap == map;
                     ImGui::MenuItem( map.c_str(), nullptr, &selected, eventFiles.find( map ) != eventFiles.end() );
                     if ( selected && currentMap != map )
                     {
