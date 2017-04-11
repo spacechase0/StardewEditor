@@ -1,0 +1,31 @@
+e=1n=Seen event ID
+h=1b=Don't have pet, and Cat Person == _
+m=1n=Total money earned
+M=1n=Current money
+c=1n=Free inventory space
+C=0=Seen 191393, seen 502261, or completed CC
+D=1s=Dating NPC
+j=1n=Played days
+J=0="checkJojaCompletePrerequisite()"
+f=1?="checkFriendshipPrecondition(_)"
+F=0=Not a festival day
+r=1d=% chance
+s=1?="checkItemsPrecondition(_)"
+q=1?="checkDialoguePrecondition(_)"
+n=1s=Mail received
+l=1s=Mail not received
+t=2nn=In time range
+w=1erainy,sunny;=Weather check
+d=1ESun,Mon,Tue,Wed,Thu,Fri,Sat;=Not one of these week days
+o=1s=Not spouse
+v=1s=Not invisible
+p=1s='isCharacterHere(_)'
+z=1espring,summer,fall,winter;=Not this season
+b=1n=player.timesReachedMineBottom
+y=1n=Year
+g=1emale,female;=Gender
+i=1i=Player has item
+k=0='checkEventsSeenPreconditions()'
+a=2i=Player is at (x,y)
+x=1s=Queue mail + mark seen, no trigger.
+u=1E=0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27
