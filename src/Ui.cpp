@@ -340,7 +340,7 @@ void Ui::preconditions()
                         break;
                 }
             }
-            if ( ImGui::Button( "Delete this precondition" ) )
+            if ( ImGui::Button( util::format( "Delete precondition##prec$", precNum ).c_str() ) )
             {
                 active->preconditions.erase( precIt );
                 break;
@@ -361,6 +361,30 @@ void Ui::actors()
     ImGui::SetNextWindowSize( ImVec2( 250, 200 ), ImGuiSetCond_Appearing );
     if ( ImGui::Begin( "actors" ) )
     {
+        int actorNum = 0;
+        for ( auto actorIt = active->actors.begin(); actorIt != active->actors.end(); ++actorIt, ++actorNum )
+        {
+            Event::Actor& actor = ( * actorIt );
+            actor.name.resize( 32, '\0' );
+            ImGui::InputText( util::format( "Name##actor$", actorNum ).c_str(), &actor.name[ 0 ], 31 );
+            static_assert( offsetof( sf::Vector2i, x ) + sizeof( int ) == offsetof( sf::Vector2i, y ), "Too lazy to make proper array, so actor.pos must be like one" );
+            ImGui::InputInt2( util::format( "Position##actor$", actorNum ).c_str(), &actor.pos.x );
+            ImGui::InputInt( util::format( "Facing##actor$", actorNum ).c_str(), &actor.facing );
+            actor.facing = actor.facing % 4;
+            
+            if ( ImGui::Button( util::format( "Delete actor##actor$", actorNum ).c_str() ) )
+            {
+                active->actors.erase( actorIt );
+                break;
+            }
+            
+            ImGui::Separator();
+        }
+        
+        if ( ImGui::Button( "New actor" ) )
+        {
+            active->actors.push_back( Event::Actor() );
+        }
     }
     ImGui::End();
 }

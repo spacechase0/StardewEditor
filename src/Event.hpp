@@ -44,8 +44,8 @@ namespace Event
     struct Actor
     {
         std::string name;
-        sf::Vector2i pos;
-        int facing;
+        sf::Vector2i pos = sf::Vector2i( 0, 0 );
+        int facing = 0;
     };
     
     struct Command
