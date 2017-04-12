@@ -38,12 +38,18 @@ class Ui
         std::map< std::string, Event::Data > eventBranches;
         Event::Data* active = nullptr;
         
+        std::vector< std::string > precTypeLabels;
+        std::string precTypeLabelsStr;
+        std::map< char, std::string > enumValuesStr;
+        
         void initMapList();
         void loadEventList( const std::string& map );
+        void reloadPreconditionTypes();
         
         void mainMenu();
         void info();
         void preconditions();
+        void actors();
         void commands();
 };
 

@@ -23,6 +23,7 @@ void Ui::update()
     {
         info();
         preconditions();
+        actors();
         commands();
     }
 }
@@ -37,9 +38,8 @@ void Ui::render( sf::RenderWindow& window )
     if ( firstUpdate )
     {
         initMapList();
+        reloadPreconditionTypes();
         firstUpdate = false;
-        
-        Event::PreconditionType::types = Event::PreconditionType::loadTypes( ( fs::path( editor.config.getDataFolder() ) / "preconditions.txt" ).string() );
     }
     
     ImGui::Render();
@@ -115,6 +115,35 @@ void Ui::loadEventList( const std::string& map )
     }
 }
 
+void Ui::reloadPreconditionTypes()
+{
+    Event::PreconditionType::types = Event::PreconditionType::loadTypes( ( fs::path( editor.config.getDataFolder() ) / "preconditions.txt" ).string() );
+    precTypeLabels.clear();
+    for ( const auto& type : Event::PreconditionType::types )
+    {
+        precTypeLabels.push_back( type.second.label );
+        
+        if ( type.second.enumValues.size() > 0 )
+        {
+            std::string str = "";
+            for ( const std::string& val : type.second.enumValues )
+            {
+                str += val + '\0';
+            }
+            str += '\0';
+            
+            enumValuesStr[ type.second.id ] = str;
+        }
+    }
+    
+    precTypeLabelsStr = "";
+    for ( const std::string& label : precTypeLabels )
+    {
+        precTypeLabelsStr += label + '\0';
+    }
+    precTypeLabelsStr += '\0';
+}
+
 void Ui::mainMenu()
 {
     if ( ImGui::BeginMainMenuBar() )
@@ -182,7 +211,7 @@ void Ui::mainMenu()
             ImGui::MenuItem( "Precondition types", nullptr, &refresh );
             if ( refresh )
             {
-                Event::PreconditionType::types = Event::PreconditionType::loadTypes( ( fs::path( editor.config.getDataFolder() ) / "preconditions.txt" ).string() );
+                reloadPreconditionTypes();
             }
             ImGui::EndMenu();
         }
@@ -216,6 +245,71 @@ void Ui::preconditions()
     ImGui::SetNextWindowPos( ImVec2( 25, 150 ), ImGuiSetCond_Appearing );
     ImGui::SetNextWindowSize( ImVec2( 250, 200 ), ImGuiSetCond_Appearing );
     if ( ImGui::Begin( "Preconditions" ) )
+    {
+        for ( auto& prec : active->preconditions )
+        {
+            const Event::PreconditionType& type = Event::PreconditionType::types[ prec.type ];
+            int selPrec = std::find( precTypeLabels.begin(), precTypeLabels.end(), type.label ) - precTypeLabels.begin();
+            ImGui::Combo( "Type", &selPrec, precTypeLabelsStr.c_str() );
+            for ( std::size_t i = 0; i < type.paramTypes.size(); ++i )
+            {
+                switch ( type.paramTypes[ i ] )
+                {
+                    case Event::ParamType::Integer:
+                        {
+                            int x = util::fromString< int >( prec.params[ i ] );
+                            ImGui::InputInt( "", &x );
+                            prec.params[ i ] = util::toString( x );
+                        }
+                        break;
+                    
+                    case Event::ParamType::Double:
+                        {
+                            float x = util::fromString< float >( prec.params[ i ] );
+                            ImGui::InputFloat( "", &x );
+                            prec.params[ i ] = util::toString( x );
+                        }
+                        break;
+                    
+                    case Event::ParamType::Bool:
+                        {
+                            bool x = prec.params[ i ] == "true";
+                            ImGui::Checkbox( "", &x );
+                            prec.params[ i ] = x ? "true" : "false";
+                        }
+                        break;
+                    
+                    case Event::ParamType::String:
+                    case Event::ParamType::Unknown:
+                        {
+                            prec.params[ i ].resize( 32, '\0' );
+                            ImGui::InputText( "", &prec.params[ i ][ 0 ], 31 );
+                        }
+                        break;
+                    
+                    case Event::ParamType::EnumOne:
+                        {
+                            int selEnum = std::find( type.enumValues.begin(), type.enumValues.end(), prec.params[ i ] ) - type.enumValues.begin();
+                            ImGui::Combo( "", &selEnum, &enumValuesStr[ type.id ][ 0 ] );
+                        }
+                        break;
+                    
+                    case Event::ParamType::EnumMany:
+                        ImGui::Text( "todo enummany" );
+                        break;
+                }
+            }
+            ImGui::Separator();
+        }
+    }
+    ImGui::End();
+}
+
+void Ui::actors()
+{
+    ImGui::SetNextWindowPos( ImVec2( 25, 375 ), ImGuiSetCond_Appearing );
+    ImGui::SetNextWindowSize( ImVec2( 250, 200 ), ImGuiSetCond_Appearing );
+    if ( ImGui::Begin( "actors" ) )
     {
     }
     ImGui::End();
