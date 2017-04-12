@@ -247,9 +247,9 @@ void Ui::preconditions()
     if ( ImGui::Begin( "Preconditions" ) )
     {
         int precNum = 0;
-        for ( auto& prec : active->preconditions )
+        for ( auto precIt = active->preconditions.begin(); precIt != active->preconditions.end(); ++precIt, ++precNum )
         {
-            ++precNum;
+            Event::Precondition& prec = ( * precIt );
             const Event::PreconditionType& type = Event::PreconditionType::types[ prec.type ];
             int selPrec = std::find( precTypeLabels.begin(), precTypeLabels.end(), type.label ) - precTypeLabels.begin();
             int oldSelPrec = selPrec;
@@ -340,9 +340,14 @@ void Ui::preconditions()
                         break;
                 }
             }
+            if ( ImGui::Button( "Delete this precondition" ) )
+            {
+                active->preconditions.erase( precIt );
+                break;
+            }
             ImGui::Separator();
         }
-        if ( ImGui::Button( "New Precondition" ) )
+        if ( ImGui::Button( "New precondition" ) )
         {
             active->preconditions.push_back( Event::Precondition::init( Event::PreconditionType::types.begin()->second ) );
         }
