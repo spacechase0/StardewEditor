@@ -118,6 +118,45 @@ namespace Event
         return ret;
     }
     
+    Precondition Precondition::init( PreconditionType type )
+    {
+        Precondition prec;
+        prec.type = type.id;
+        
+        prec.params.clear();
+        prec.params.resize( type.paramTypes.size() );
+        for ( std::size_t param = 0, currParamVal = 0; param < type.paramTypes.size(); ++param )
+        {
+            Event::ParamType paramType = type.paramTypes[ param ];
+            switch ( paramType )
+            {
+                case Event::ParamType::Integer:
+                case Event::ParamType::Double:
+                    prec.params[ currParamVal++ ] = "0";
+                    break;
+                
+                case Event::ParamType::Bool:
+                    prec.params[ currParamVal++ ] = "false";
+                    break;
+                
+                case Event::ParamType::String:
+                case Event::ParamType::Unknown:
+                    prec.params[ currParamVal++ ] = "";
+                    break;
+                
+                case Event::ParamType::EnumOne:
+                    prec.params[ currParamVal++ ] = type.enumValues[ 0 ];
+                    break;
+                
+                case Event::ParamType::EnumMany:
+                    prec.params.pop_back();
+                    break;
+            }
+        }
+        
+        return prec;
+    }
+    
     Data::Data()
     {
         branchName.resize( 32, '\0' );

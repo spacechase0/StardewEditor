@@ -37,6 +37,8 @@ namespace Event
     {
         char type;
         std::vector< std::string > params;
+        
+        static Precondition init( PreconditionType type );
     };
     
     struct Actor

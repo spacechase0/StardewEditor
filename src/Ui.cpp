@@ -260,37 +260,7 @@ void Ui::preconditions()
                 {
                     if ( checkType.second.label == precTypeLabels[ selPrec ] )
                     {
-                        prec.type = checkType.second.id;
-                        prec.params.clear();
-                        prec.params.resize( checkType.second.paramTypes.size() );
-                        for ( std::size_t param = 0, currParamVal = 0; param < checkType.second.paramTypes.size(); ++param )
-                        {
-                            Event::ParamType paramType = checkType.second.paramTypes[ param ];
-                            switch ( paramType )
-                            {
-                                case Event::ParamType::Integer:
-                                case Event::ParamType::Double:
-                                    prec.params[ currParamVal++ ] = "0";
-                                    break;
-                                
-                                case Event::ParamType::Bool:
-                                    prec.params[ currParamVal++ ] = "false";
-                                    break;
-                                
-                                case Event::ParamType::String:
-                                case Event::ParamType::Unknown:
-                                    prec.params[ currParamVal++ ] = "";
-                                    break;
-                                
-                                case Event::ParamType::EnumOne:
-                                    prec.params[ currParamVal++ ] = checkType.second.enumValues[ 0 ];
-                                    break;
-                                
-                                case Event::ParamType::EnumMany:
-                                    prec.params.pop_back();
-                                    break;
-                            }
-                        }
+                        prec = Event::Precondition::init( checkType.second );
                         break;
                     }
                 }
@@ -371,6 +341,10 @@ void Ui::preconditions()
                 }
             }
             ImGui::Separator();
+        }
+        if ( ImGui::Button( "New Precondition" ) )
+        {
+            active->preconditions.push_back( Event::Precondition::init( Event::PreconditionType::types.begin()->second ) );
         }
     }
     ImGui::End();
