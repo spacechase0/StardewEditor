@@ -298,7 +298,23 @@ void Ui::preconditions()
                         break;
                     
                     case Event::ParamType::EnumMany:
-                        ImGui::Text( "todo enummany" );
+                        {
+                            for ( int e = 0; e < type.enumValues.size(); ++e )
+                            {
+                                const std::string& val = type.enumValues[ e ];
+                                auto valIt = std::find( prec.params.begin(), prec.params.end(), val );
+                                bool sel = valIt != prec.params.end();
+                                bool oldSel = sel;
+                                ImGui::Checkbox( util::format( "$##prec$param$val$", val, precNum, i, e ).c_str(), &sel );
+                                if ( sel != oldSel )
+                                {
+                                    if ( sel )
+                                        prec.params.push_back( val );
+                                    else
+                                        prec.params.erase( valIt );
+                                }
+                            }
+                        }
                         break;
                 }
             }
