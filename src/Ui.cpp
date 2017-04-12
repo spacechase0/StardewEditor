@@ -252,7 +252,51 @@ void Ui::preconditions()
             ++precNum;
             const Event::PreconditionType& type = Event::PreconditionType::types[ prec.type ];
             int selPrec = std::find( precTypeLabels.begin(), precTypeLabels.end(), type.label ) - precTypeLabels.begin();
+            int oldSelPrec = selPrec;
             ImGui::Combo( util::format( "Type##prec$", precNum ).c_str(), &selPrec, precTypeLabelsStr.c_str() );
+            if ( selPrec != oldSelPrec )
+            {
+                for ( const auto& checkType : Event::PreconditionType::types )
+                {
+                    if ( checkType.second.label == precTypeLabels[ selPrec ] )
+                    {
+                        prec.type = checkType.second.id;
+                        prec.params.clear();
+                        prec.params.resize( checkType.second.paramTypes.size() );
+                        for ( std::size_t param = 0, currParamVal = 0; param < checkType.second.paramTypes.size(); ++param )
+                        {
+                            Event::ParamType paramType = checkType.second.paramTypes[ param ];
+                            switch ( paramType )
+                            {
+                                case Event::ParamType::Integer:
+                                case Event::ParamType::Double:
+                                    prec.params[ currParamVal++ ] = "0";
+                                    break;
+                                
+                                case Event::ParamType::Bool:
+                                    prec.params[ currParamVal++ ] = "false";
+                                    break;
+                                
+                                case Event::ParamType::String:
+                                case Event::ParamType::Unknown:
+                                    prec.params[ currParamVal++ ] = "";
+                                    break;
+                                
+                                case Event::ParamType::EnumOne:
+                                    prec.params[ currParamVal++ ] = checkType.second.enumValues[ 0 ];
+                                    break;
+                                
+                                case Event::ParamType::EnumMany:
+                                    prec.params.pop_back();
+                                    break;
+                            }
+                        }
+                        break;
+                    }
+                }
+                continue;
+            }
+            
             for ( std::size_t i = 0; i < type.paramTypes.size(); ++i )
             {
                 switch ( type.paramTypes[ i ] )
@@ -260,24 +304,30 @@ void Ui::preconditions()
                     case Event::ParamType::Integer:
                         {
                             int x = util::fromString< int >( prec.params[ i ] );
+                            int oldX = x;
                             ImGui::InputInt( util::format( "##prec$param$", precNum, i ).c_str(), &x );
-                            prec.params[ i ] = util::toString( x );
+                            if ( x != oldX )
+                                prec.params[ i ] = util::toString( x );
                         }
                         break;
                     
                     case Event::ParamType::Double:
                         {
                             float x = util::fromString< float >( prec.params[ i ] );
+                            float oldX = x;
                             ImGui::InputFloat( util::format( "##prec$param$", precNum, i ).c_str(), &x );
-                            prec.params[ i ] = util::toString( x );
+                            if ( x != oldX )
+                                prec.params[ i ] = util::toString( x );
                         }
                         break;
                     
                     case Event::ParamType::Bool:
                         {
                             bool x = prec.params[ i ] == "true";
+                            bool oldX = x;
                             ImGui::Checkbox( util::format( "##prec$param$", precNum, i ).c_str(), &x );
-                            prec.params[ i ] = x ? "true" : "false";
+                            if ( x != oldX )
+                                prec.params[ i ] = x ? "true" : "false";
                         }
                         break;
                     
@@ -292,14 +342,16 @@ void Ui::preconditions()
                     case Event::ParamType::EnumOne:
                         {
                             int selEnum = std::find( type.enumValues.begin(), type.enumValues.end(), prec.params[ i ] ) - type.enumValues.begin();
+                            int oldSelEnum = selEnum;
                             ImGui::Combo( util::format( "##prec$param$", precNum, i ).c_str(), &selEnum, &enumValuesStr[ type.id ][ 0 ] );
-                            prec.params[ i ] = type.enumValues[ selEnum ];
+                            if ( selEnum != oldSelEnum )
+                                prec.params[ i ] = type.enumValues[ selEnum ];
                         }
                         break;
                     
                     case Event::ParamType::EnumMany:
                         {
-                            for ( int e = 0; e < type.enumValues.size(); ++e )
+                            for ( std::size_t e = 0; e < type.enumValues.size(); ++e )
                             {
                                 const std::string& val = type.enumValues[ e ];
                                 auto valIt = std::find( prec.params.begin(), prec.params.end(), val );
