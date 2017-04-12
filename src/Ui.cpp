@@ -267,55 +267,56 @@ void Ui::preconditions()
                 continue;
             }
             
-            for ( std::size_t i = 0; i < type.paramTypes.size(); ++i )
+            std::size_t iVal = 0;
+            for ( std::size_t i = 0; i < type.paramTypes.size(); ++i, ++iVal )
             {
                 switch ( type.paramTypes[ i ] )
                 {
                     case Event::ParamType::Integer:
                         {
-                            int x = util::fromString< int >( prec.params[ i ] );
+                            int x = util::fromString< int >( prec.params[ iVal ] );
                             int oldX = x;
-                            ImGui::InputInt( util::format( "##prec$param$", precNum, i ).c_str(), &x );
+                            ImGui::InputInt( util::format( "$##prec$param$", type.paramLabels[ i ], precNum, i ).c_str(), &x );
                             if ( x != oldX )
-                                prec.params[ i ] = util::toString( x );
+                                prec.params[ iVal ] = util::toString( x );
                         }
                         break;
                     
                     case Event::ParamType::Double:
                         {
-                            float x = util::fromString< float >( prec.params[ i ] );
+                            float x = util::fromString< float >( prec.params[ iVal ] );
                             float oldX = x;
-                            ImGui::InputFloat( util::format( "##prec$param$", precNum, i ).c_str(), &x );
+                            ImGui::InputFloat( util::format( "$##prec$param$", type.paramLabels[ i ], precNum, i ).c_str(), &x );
                             if ( x != oldX )
-                                prec.params[ i ] = util::toString( x );
+                                prec.params[ iVal ] = util::toString( x );
                         }
                         break;
                     
                     case Event::ParamType::Bool:
                         {
-                            bool x = prec.params[ i ] == "true";
+                            bool x = prec.params[ iVal ] == "true";
                             bool oldX = x;
-                            ImGui::Checkbox( util::format( "##prec$param$", precNum, i ).c_str(), &x );
+                            ImGui::Checkbox( util::format( "$##prec$param$", type.paramLabels[ i ], precNum, i ).c_str(), &x );
                             if ( x != oldX )
-                                prec.params[ i ] = x ? "true" : "false";
+                                prec.params[ iVal ] = x ? "true" : "false";
                         }
                         break;
                     
                     case Event::ParamType::String:
                     case Event::ParamType::Unknown:
                         {
-                            prec.params[ i ].resize( 32, '\0' );
-                            ImGui::InputText( util::format( "##prec$param$", precNum, i ).c_str(), &prec.params[ i ][ 0 ], 31 );
+                            prec.params[ iVal ].resize( 32, '\0' );
+                            ImGui::InputText( util::format( "$##prec$param$", type.paramLabels[ i ], precNum, i ).c_str(), &prec.params[ iVal ][ 0 ], 31 );
                         }
                         break;
                     
                     case Event::ParamType::EnumOne:
                         {
-                            int selEnum = std::find( type.enumValues.begin(), type.enumValues.end(), prec.params[ i ] ) - type.enumValues.begin();
+                            int selEnum = std::find( type.enumValues.begin(), type.enumValues.end(), prec.params[ iVal ] ) - type.enumValues.begin();
                             int oldSelEnum = selEnum;
                             ImGui::Combo( util::format( "##prec$param$", precNum, i ).c_str(), &selEnum, &enumValuesStr[ type.id ][ 0 ] );
                             if ( selEnum != oldSelEnum )
-                                prec.params[ i ] = type.enumValues[ selEnum ];
+                                prec.params[ iVal ] = type.enumValues[ selEnum ];
                         }
                         break;
                     
@@ -336,6 +337,20 @@ void Ui::preconditions()
                                         prec.params.erase( valIt );
                                 }
                             }
+                        }
+                        break;
+                    
+                    case Event::ParamType::Position:
+                        {
+                            sf::Vector2i x( util::fromString< int >( prec.params[ iVal ] ), util::fromString< int >( prec.params[ iVal + 1 ] ) );
+                            sf::Vector2i oldX;
+                            ImGui::InputInt2( util::format( "$##prec$param$", type.paramLabels[ i ], precNum, i ).c_str(), &x.x );
+                            if ( x != oldX )
+                            {
+                                prec.params[ i ] = util::toString( x.x );
+                                prec.params[ i + 1 ] = util::toString( x.y );
+                            }
+                            ++iVal;
                         }
                         break;
                 }
@@ -367,7 +382,6 @@ void Ui::actors()
             Event::Actor& actor = ( * actorIt );
             actor.name.resize( 32, '\0' );
             ImGui::InputText( util::format( "Name##actor$", actorNum ).c_str(), &actor.name[ 0 ], 31 );
-            static_assert( offsetof( sf::Vector2i, x ) + sizeof( int ) == offsetof( sf::Vector2i, y ), "Too lazy to make proper array, so actor.pos must be like one" );
             ImGui::InputInt2( util::format( "Position##actor$", actorNum ).c_str(), &actor.pos.x );
             ImGui::InputInt( util::format( "Facing##actor$", actorNum ).c_str(), &actor.facing );
             actor.facing = actor.facing % 4;

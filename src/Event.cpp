@@ -97,18 +97,24 @@ namespace Event
             std::string params = str.substr( eq1 + 1, eq2 - eq1 - 1 );
             
             int paramCount = params[ 0 ] - '0';
-            for ( int param = 0, i = 1; param< paramCount; ++param )
+            for ( int param = 0, i = 1; param < paramCount; ++param )
             {
                 ParamType type = static_cast< ParamType >( params[ i ] );
+                
+                std::size_t end = params.find( ';', i + 1 );
+                if ( end == std::string::npos )
+                    continue;
+                std::string vals = params.substr( i + 1, end - i - 1 );
                 if ( type == ParamType::EnumOne || type == ParamType::EnumMany )
                 {
-                    std::size_t end = params.find( ';', i + 1 );
-                    if ( end == std::string::npos )
-                        continue;
-                    std::string vals = params.substr( i + 1, end - i - 1 );
                     prec.enumValues = util::tokenize( vals, "," );
+                    prec.paramLabels.push_back( "" );
                 }
-                else ++i;
+                else
+                {
+                    prec.paramLabels.push_back( vals );
+                }
+                i = end + 1;
                 prec.paramTypes.push_back( type );
             }
             
@@ -150,6 +156,11 @@ namespace Event
                 
                 case Event::ParamType::EnumMany:
                     prec.params.pop_back();
+                    break;
+                    
+                case Event::ParamType::Position:
+                    prec.params[ currParamVal++ ] = "0";
+                    prec.params.insert( prec.params.begin() + currParamVal++, "0" );
                     break;
             }
         }

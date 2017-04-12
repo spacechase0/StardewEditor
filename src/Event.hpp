@@ -8,6 +8,8 @@
 
 namespace Event
 {
+            static_assert( offsetof( sf::Vector2i, x ) + sizeof( int ) == offsetof( sf::Vector2i, y ), "Too lazy to make proper array, so actor.pos must be like one" );
+            
     enum ParamType : char
     {
         Integer = 'i',
@@ -17,6 +19,8 @@ namespace Event
         EnumOne = 'e',
         EnumMany = 'E',
         
+        Position = 'p',
+        
         Unknown = '?',
     };
     
@@ -24,6 +28,7 @@ namespace Event
     {
         char id;
         std::vector< ParamType > paramTypes;
+        std::vector< std::string > paramLabels;
         std::string label;
         
         /// We're assuming there is only one enum type per precondition, for now.
