@@ -246,11 +246,13 @@ void Ui::preconditions()
     ImGui::SetNextWindowSize( ImVec2( 250, 200 ), ImGuiSetCond_Appearing );
     if ( ImGui::Begin( "Preconditions" ) )
     {
+        int precNum = 0;
         for ( auto& prec : active->preconditions )
         {
+            ++precNum;
             const Event::PreconditionType& type = Event::PreconditionType::types[ prec.type ];
             int selPrec = std::find( precTypeLabels.begin(), precTypeLabels.end(), type.label ) - precTypeLabels.begin();
-            ImGui::Combo( "Type", &selPrec, precTypeLabelsStr.c_str() );
+            ImGui::Combo( util::format( "Type##prec$", precNum ).c_str(), &selPrec, precTypeLabelsStr.c_str() );
             for ( std::size_t i = 0; i < type.paramTypes.size(); ++i )
             {
                 switch ( type.paramTypes[ i ] )
@@ -258,7 +260,7 @@ void Ui::preconditions()
                     case Event::ParamType::Integer:
                         {
                             int x = util::fromString< int >( prec.params[ i ] );
-                            ImGui::InputInt( "", &x );
+                            ImGui::InputInt( util::format( "##prec$param$", precNum, i ).c_str(), &x );
                             prec.params[ i ] = util::toString( x );
                         }
                         break;
@@ -266,7 +268,7 @@ void Ui::preconditions()
                     case Event::ParamType::Double:
                         {
                             float x = util::fromString< float >( prec.params[ i ] );
-                            ImGui::InputFloat( "", &x );
+                            ImGui::InputFloat( util::format( "##prec$param$", precNum, i ).c_str(), &x );
                             prec.params[ i ] = util::toString( x );
                         }
                         break;
@@ -274,7 +276,7 @@ void Ui::preconditions()
                     case Event::ParamType::Bool:
                         {
                             bool x = prec.params[ i ] == "true";
-                            ImGui::Checkbox( "", &x );
+                            ImGui::Checkbox( util::format( "##prec$param$", precNum, i ).c_str(), &x );
                             prec.params[ i ] = x ? "true" : "false";
                         }
                         break;
@@ -283,14 +285,15 @@ void Ui::preconditions()
                     case Event::ParamType::Unknown:
                         {
                             prec.params[ i ].resize( 32, '\0' );
-                            ImGui::InputText( "", &prec.params[ i ][ 0 ], 31 );
+                            ImGui::InputText( util::format( "##prec$param$", precNum, i ).c_str(), &prec.params[ i ][ 0 ], 31 );
                         }
                         break;
                     
                     case Event::ParamType::EnumOne:
                         {
                             int selEnum = std::find( type.enumValues.begin(), type.enumValues.end(), prec.params[ i ] ) - type.enumValues.begin();
-                            ImGui::Combo( "", &selEnum, &enumValuesStr[ type.id ][ 0 ] );
+                            ImGui::Combo( util::format( "##prec$param$", precNum, i ).c_str(), &selEnum, &enumValuesStr[ type.id ][ 0 ] );
+                            prec.params[ i ] = type.enumValues[ selEnum ];
                         }
                         break;
                     
