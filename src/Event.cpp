@@ -105,7 +105,7 @@ namespace Event
                     std::size_t end = params.find( ';', i + 1 );
                     if ( end == std::string::npos )
                         continue;
-                    std::string vals = params.substr( i + 1, end - i );
+                    std::string vals = params.substr( i + 1, end - i - 1 );
                     prec.enumValues = util::tokenize( vals, "," );
                 }
                 else ++i;
