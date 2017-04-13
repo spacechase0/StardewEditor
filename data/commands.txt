@@ -1,0 +1,103 @@
+move=4sActor;pPosition;iFacing;bContinue after move;*=Move character
+speak=2sActor;sText;=Show dialogue
+minedeath=0=Mine death?
+hospitaldeath=0=Hospital death?
+end=?=End event?
+skippable=0=Allow skipping this event
+emote=2sActor;iEmote;=Character emote
+stopMusic=0=Stop music
+playSound=1s=Play sound
+pause=1i=Pause time for _?
+resetVariable=0='specialEventVariable1 = false'
+faceDirection=3sCharacter;iDirection;sIf empty, pauses for a moment;=Character face direction
+warp=2sCharacter;pPosition;=Warp character to location
+speed=2sCharacter;iSpeed modifier;=Change actor speed
+stopAdvancedMoves=0='stopAdvancedMoves'
+doAction=1pPosition;=location.checkAction?
+removeTile=2pPosition;sLayer;=Remove tile from layer
+textAboveHead=2sCharacter;sText;=actor.showTextAboveHead?
+showFrame=2sCharacter;sFrame number OR 'flip' (farmer only);=Set sprite frame
+farmerAnimation=1i?;=FarmerSprite.setCurrentSingleAnimation?
+animate=5sCharacter;i?;b?;b?;sactually mult ints?;=animation stuff
+stopAnimation=2sCharacter;iNew frame?;=Stop animation?
+showRivalFrame=1iFrame;=Set rival frame
+weddingSprite=1iFrame;=Set the actor 'WeddingOutfits' to a particular frame
+changeLocation=1sLocation;=Move the event to another location
+halt=0=Make everyone stop
+message=1sText;=Show a message (no speaker).
+addCookingRecipe=1sRecipe;=Give player cooking recipe
+itemAboveHead=1s=Show player holding item
+addCraftingRecipe=1sRecipe;Give player crafting recipe
+mail=1sMail;=Queue mail for tomorrow
+shake=2sCharacter;iDuration;=Shake character
+temporarySprite=6pPosition;iRow in anim. texture;iAnim. length;iAnim. interval;bFlipped;i# of loops;=Create a temporary sprite
+removeTemporarySprites=0=Remove all temporary sprites
+specificTemporarySprite=sSprite;sOther parameters;=See Event.addSpecificTemporarySprite
+playMusic=1sMusic;=Play music
+characterSelect=0=Game1.gameMode = 5
+addObject=3iRow in anim. texture;pPosition;=Add object (temporary anim sprite?)
+addBigProp=2pPosition;iObject ID;=Add an object
+addProp=6iProp index;pPosition;iWidth;iHeight;iDraw Height;iX range?;iY range?;=Add prop
+addFloorPop=6iProp index;pPosition;iWidth;iHeight;iDraw Height;iX range?;iY range?;=Add floor prop
+addToTable=2pPosition;iObject ID;=Set object on farmer table
+removeObject=1pPosition;=Remove object at
+glow=4iRed;iGreen;iBlue;bHold?=Screen glow
+stopGlowing=0=Stop screen glow
+addQuest=1iQuest ID;=Add quest
+removeQuest=1iQuest ID;=Remove quest
+awardFestivalPrize=1sAward (empty for festival);=Award festival prize
+pixelZoom=1iValue;=Set pixel zoom
+attachCharacterToTempSprite=1sCharacter;=Attach character to recent temporary sprite
+fork=2sBranch name;sMail (str) or dialogue answer (int) req. (empty means requires specialEventVariable)=Branch to another event
+switchEvent=1sEvent ID/name;=Switch event
+globalFade=1dSpeed;=Fade to black
+globalFadeToClear=1dSpeed;=Fade to clear
+cutscene=1sCutscene;=Activate cutscene
+grabObject=1iObject ID;=Player grab object
+addTool=1eSword;Wand;=Player add tool
+waitForKey=2sKey;sText;=Wait for key press, then ???
+cave=0=Choose cave type (mushrooms/bats)
+updateMinigame=1i=Send event to current minigame
+startJittering=0=Make player jitter
+stopJittering=0=Stop player jitter
+addLantern=3iRow in anim texture;pPosition;iLight radius;=Add Lantern?
+rustyKey=0=Gives player rusty key
+swimming=1sCharacter;=Set character swimming
+stopSwimming=1sCharacter;=Stop character swimming
+tutorialMenu=0=Show tutorial menu
+animalNaming=0=Show animal naming menu
+splitSpeak=0=splitSpeak -- TODO
+catQuestion=0=catQuestion
+taxvote=0=taxvote
+ambientLight=3iR;iG;iB;=Set ambient light color
+bloom=7dBloom Threshold;dBlur Amount;dBloom Intensity;dBase Intensity;dBloom Saturation;dBase Saturation;sNot empty = bright white light only;=Set bloom effect
+ellioitbooktalk=0=Elliot book talk
+removeItem=1iObject ID;=Remove item
+friendship=2sNPC;iAmount;=Add friendship points
+setRunning=0=Set player running
+extendSourceRect=4sCharacter;sHorizontal (int) or 'reset' (ignore other params);iVertical;sEmpty = ignore source rect updates=Extend source rect?
+waitForOtherPlayers=0=Wait for other players (vanilla MP)
+advancedMove==stuff
+stopRunning=0=Set player not running
+eyes=2iCurrent eyes;iBlink timer;=Player eyes state
+addMailReceived=1sMail ID;=Add mail received
+fade=1sEmpty is fade out?;=Fade?
+changeMapTile=3sLayer;pPosition;iTile index;=Change map tile
+changeSprite=2sCharacter;sNew Sprite;=Change character sprite
+proceedPosition=1sCharacter;=continueAfterMove = true?
+changePortrait=2sCharacter;sPortrait;=Change character portrait
+changeYSourceRectOffset=2sCharacter;iOffset;=Change character y texture-rect offset
+addTemporaryActor=LONG=addTemporaryActor -- TODO
+changeToTemporaryMap=2sMap file;sEmpty for pan to (0,0)=Change to temporary map
+positionOffset=3sCharacter;pOffset;Empty is halt until done?=Offset position of character
+jump=2sCharacter;dIntensity?;=Make character jump
+farmerEat=1iObject ID;=Make player eat object
+screenFlash=1dFlash alpha;=Screen flash
+grandpaCandles=0=Do grandpa candles
+grandpaEvaluation2=0=Do grandpa evaluation (2?)
+grandpaEvaluation=0=Do grandpa evaluation
+loadActors=1sLayer;=Load actors from layer in temporary location map
+removeSprite=1pPosition;=Remove sprite at
+viewport=?=viewport TODO - multiple command types
+playerControl=0=Give player control
+question=2efork0,fork1,fork2;sText;=Question
