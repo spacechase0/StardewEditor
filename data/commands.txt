@@ -7,11 +7,11 @@ skippable=0=Allow skipping this event
 emote=2sActor;iEmote;=Character emote
 stopMusic=0=Stop music
 playSound=1s=Play sound
-pause=1i=Pause time for _?
+pause=1d=Pause time for _?
 resetVariable=0='specialEventVariable1 = false'
-faceDirection=3sCharacter;iDirection;sIf empty, pauses for a moment;=Character face direction
-warp=2sCharacter;pPosition;=Warp character to location
-speed=2sCharacter;iSpeed modifier;=Change actor speed
+faceDirection=3sActor;iDirection;sIf empty, pauses for a moment;=Character face direction
+warp=2sActor;pPosition;=Warp character to location
+speed=2sActor;iSpeed modifier;=Change actor speed
 stopAdvancedMoves=0='stopAdvancedMoves'
 doAction=1pPosition;=location.checkAction?
 removeTile=2pPosition;sLayer;=Remove tile from layer
@@ -94,7 +94,7 @@ jump=2sCharacter;dIntensity?;=Make character jump
 farmerEat=1iObject ID;=Make player eat object
 screenFlash=1dFlash alpha;=Screen flash
 grandpaCandles=0=Do grandpa candles
-grandpaEvaluation2=0=Do grandpa evaluation (2?)
+grandpaEvaluation2=0=Do grandpa evaluation (manually summoned)
 grandpaEvaluation=0=Do grandpa evaluation
 loadActors=1sLayer;=Load actors from layer in temporary location map
 removeSprite=1pPosition;=Remove sprite at
