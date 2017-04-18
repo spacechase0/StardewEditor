@@ -3,6 +3,7 @@
 
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Texture.hpp>
+#include <SFML/Graphics/View.hpp>
 #include <string>
 
 class Editor;
@@ -29,10 +30,14 @@ class Map
         {
             Panning,
         } clickMode = Panning;
+        
+        sf::Vector2f pixelToWorld( sf::Vector2i pixel ) const;
     
     private:
         Editor& editor;
+        bool firstUpdate = true;
         
+        sf::View view;
         std::string current;
         sf::Texture tex;
         sf::Sprite spr;

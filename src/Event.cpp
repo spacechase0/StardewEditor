@@ -61,7 +61,19 @@ namespace
         for ( const std::string& token : tokens )
         {
             if ( i++ < skip ) continue;
-            std::string cmd = token.substr( 0, token.find( ' ' ) );
+            
+            Event::Command toAdd;
+            
+            std::size_t space = token.find( ' ' );
+            toAdd.cmd = token;//token.substr( 0, space );
+            /*
+            if ( space != std::string::npos )
+            {
+                toAdd.params = util::tokenize( token.substr( space + 1 ), " " );
+            }
+            */
+            
+            ret.push_back( toAdd );
         }
         
         return ret;

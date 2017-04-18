@@ -4,6 +4,7 @@
 #include <imgui.h>
 #include <imgui-sfml.h>
 #include <SFML/Graphics/Sprite.hpp>
+#include <SFML/Window/Mouse.hpp>
 #include <util/String.hpp>
 
 #include "Editor.hpp"
@@ -19,6 +20,7 @@ void Ui::update()
     ImGui::SFML::Update( editor.window, delta.restart() );
     
     mainMenu();
+    toolbar();
     if ( active )
     {
         info();
@@ -220,11 +222,40 @@ void Ui::mainMenu()
     }
 }
 
+void Ui::toolbar()
+{
+    int style = ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize;
+    style |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar;
+    style |= ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoSavedSettings;
+    
+    ImGui::SetNextWindowPos( ImVec2( -8, editor.window.getSize().y - 28 ) );
+    ImGui::SetNextWindowSize( ImVec2( editor.window.getSize().x + 16, 28 ) );
+    if ( ImGui::Begin( "", nullptr, style ) )
+    {
+        std::string tilePos = "";
+        std::string pixelPos = "";
+        if ( isMouseOutside() )
+        {
+            sf::Vector2f pixel = editor.map.pixelToWorld( sf::Mouse::getPosition( editor.window ) );
+            sf::Vector2i tile( pixel.x / TILE_SIZE, pixel.y / TILE_SIZE );
+            if ( pixel.x < 0 ) tile.x -= 1;
+            if ( pixel.y < 0 ) tile.y -= 1;
+            
+            tilePos = util::format( "($, $)", tile.x, tile.y );
+            pixelPos = util::format< int, int >( "($, $)", pixel.x, pixel.y );
+        }
+        ImGui::Text( ( "Tile: " + tilePos ).c_str() );
+        ImGui::SameLine( 150 );
+        ImGui::Text( ( "Pixel: " + pixelPos ).c_str() );
+    }
+    ImGui::End();
+}
+
 void Ui::info()
 {
     ImGui::SetNextWindowPos( ImVec2( 25, 25 ), ImGuiSetCond_Appearing );
     ImGui::SetNextWindowSize( ImVec2( 250, 100 ), ImGuiSetCond_Appearing );
-    if ( ImGui::Begin( "Info" ) )
+    if ( ImGui::Begin( "Event Info" ) )
     {
         if ( active->id != -1 )
             ImGui::InputInt( "Event ID", &active->id );
@@ -244,7 +275,7 @@ void Ui::preconditions()
     
     ImGui::SetNextWindowPos( ImVec2( 25, 150 ), ImGuiSetCond_Appearing );
     ImGui::SetNextWindowSize( ImVec2( 250, 200 ), ImGuiSetCond_Appearing );
-    if ( ImGui::Begin( "Preconditions" ) )
+    if ( ImGui::Begin( "Event Preconditions" ) )
     {
         int precNum = 0;
         for ( auto precIt = active->preconditions.begin(); precIt != active->preconditions.end(); ++precIt, ++precNum )
@@ -374,7 +405,7 @@ void Ui::actors()
 {
     ImGui::SetNextWindowPos( ImVec2( 25, 375 ), ImGuiSetCond_Appearing );
     ImGui::SetNextWindowSize( ImVec2( 250, 200 ), ImGuiSetCond_Appearing );
-    if ( ImGui::Begin( "actors" ) )
+    if ( ImGui::Begin( "Event Actors" ) )
     {
         int actorNum = 0;
         for ( auto actorIt = active->actors.begin(); actorIt != active->actors.end(); ++actorIt, ++actorNum )
@@ -407,8 +438,28 @@ void Ui::commands()
 {
     ImGui::SetNextWindowPos( ImVec2( editor.window.getSize().x - 25 - 250, 25 ), ImGuiSetCond_Appearing );
     ImGui::SetNextWindowSize( ImVec2( 250, 500 ), ImGuiSetCond_Appearing );
-    if ( ImGui::Begin( "Commands" ) )
+    if ( ImGui::Begin( "Event Commands" ) )
     {
+        int cmdNum = 0;
+        for ( auto cmdIt = active->commands.begin(); cmdIt != active->commands.end(); ++cmdIt, ++cmdNum )
+        {
+            Event::Command& command = ( * cmdIt );
+            command.cmd.resize( 512, '\0' );
+            ImGui::InputText( util::format( "Command##cmd$", cmdNum ).c_str(), &command.cmd[ 0 ], 511 );
+            
+            if ( ImGui::Button( util::format( "Delete command##cmd$", cmdNum ).c_str() ) )
+            {
+                active->commands.erase( cmdIt );
+                break;
+            }
+            
+            ImGui::Separator();
+        }
+        
+        if ( ImGui::Button( "New command" ) )
+        {
+            active->commands.push_back( Event::Command() );
+        } 
     }
     ImGui::End();
 }

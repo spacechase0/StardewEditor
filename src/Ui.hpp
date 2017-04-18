@@ -47,6 +47,7 @@ class Ui
         void reloadPreconditionTypes();
         
         void mainMenu();
+        void toolbar();
         void info();
         void preconditions();
         void actors();

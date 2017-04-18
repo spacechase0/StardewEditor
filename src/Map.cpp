@@ -12,6 +12,13 @@ Map::Map( Editor& theEditor )
 
 void Map::update()
 {
+    if ( firstUpdate )
+    {
+        view = sf::View( sf::FloatRect( 0, 0, editor.window.getSize().x, editor.window.getSize().y ) );
+        
+        firstUpdate = false;
+    }
+    
     if ( dragging && !sf::Mouse::isButtonPressed( sf::Mouse::Left ) )
     {
         dragging = false;
@@ -28,22 +35,27 @@ void Map::update( const sf::Event& event )
             {
                 case Panning:
                     dragging = true;
-                    dragFrom = editor.window.mapPixelToCoords( sf::Vector2i( event.mouseButton.x, event.mouseButton.y ) );
+                    dragFrom = pixelToWorld( sf::Vector2i( event.mouseButton.x, event.mouseButton.y ) );
                     break;
             }
         }
+    }
+    else if ( event.type == sf::Event::Resized )
+    {
+        sf::Vector2f oldCenter = view.getCenter();
+        view = sf::View( sf::FloatRect( 0, 0, editor.window.getSize().x, editor.window.getSize().y ) );
+        view.setCenter( oldCenter );
     }
 }
 
 void Map::render( sf::RenderWindow& window )
 {
-    sf::View view( sf::FloatRect( 0, 0, window.getSize().x, window.getSize().y ) );
     window.setView( view );
     
     if ( dragging )
     {
-        sf::Vector2f dragTo = window.mapPixelToCoords( sf::Vector2i( sf::Mouse::getPosition( window ) ) );
-        spr.move( dragTo - dragFrom );
+        sf::Vector2f dragTo = pixelToWorld( sf::Vector2i( sf::Mouse::getPosition( window ) ) );
+        view.move( dragTo - dragFrom );
         dragFrom = dragTo;
     }
     
@@ -68,4 +80,9 @@ void Map::changeCurrentMap( const std::string& map )
 std::string Map::getCurrentMap() const
 {
     return current;
+}
+
+sf::Vector2f Map::pixelToWorld( sf::Vector2i pixel ) const
+{
+    return editor.window.mapPixelToCoords( pixel, view );
 }
