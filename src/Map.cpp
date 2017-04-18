@@ -54,9 +54,10 @@ void Map::render( sf::RenderWindow& window )
     
     if ( dragging )
     {
-        sf::Vector2f dragTo = pixelToWorld( sf::Vector2i( sf::Mouse::getPosition( window ) ) );
-        view.move( dragTo - dragFrom );
-        dragFrom = dragTo;
+        sf::Vector2i mouse = sf::Vector2i( sf::Mouse::getPosition( window ) );
+        sf::Vector2f dragTo = pixelToWorld( mouse );
+        view.move( dragFrom - dragTo );
+        dragFrom = pixelToWorld( mouse );
     }
     
     if ( current != "" )
