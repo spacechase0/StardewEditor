@@ -150,61 +150,80 @@ void Ui::mainMenu()
 {
     if ( ImGui::BeginMainMenuBar() )
     {
-        if ( ImGui::BeginMenu( "File" ) )
+        if ( ImGui::BeginMenu( "Maps" ) )
         {
-            if ( ImGui::BeginMenu( "Maps" ) )
+            bool refresh = false;
+            ImGui::MenuItem( "(Refresh...)", nullptr, &refresh );
+            if ( refresh )
             {
-                bool refresh = false;
-                ImGui::MenuItem( "(Refresh...)", nullptr, &refresh );
-                if ( refresh )
+                initMapList();
+            }
+            ImGui::MenuItem( "", nullptr );
+            
+            for ( const auto& map : maps )
+            {
+                bool selected = editor.map.getCurrentMap() == map;
+                ImGui::MenuItem( map.c_str(), nullptr, &selected, eventFiles.find( map ) != eventFiles.end() );
+                if ( selected && editor.map.getCurrentMap() != map )
                 {
-                    initMapList();
+                    editor.map.changeCurrentMap( map );
+                    loadEventList( map );
+                }
+            }
+            
+            ImGui::EndMenu();
+        }
+        if ( ImGui::BeginMenu( "Events" ) )
+        {
+            if ( ImGui::BeginMenu( "New" ) )
+            {
+                bool selected = false;
+                ImGui::MenuItem( "w/ ID", nullptr, &selected );
+                if ( selected )
+                {
+                    /// TODO: Implement
+                    //events.insert();
                 }
                 
-                for ( const auto& map : maps )
+                selected = false;
+                ImGui::MenuItem( "Named", nullptr, &selected );
+                if ( selected )
                 {
-                    bool selected = editor.map.getCurrentMap() == map;
-                    ImGui::MenuItem( map.c_str(), nullptr, &selected, eventFiles.find( map ) != eventFiles.end() );
-                    if ( selected && editor.map.getCurrentMap() != map )
-                    {
-                        editor.map.changeCurrentMap( map );
-                        loadEventList( map );
-                    }
+                    /// TODO: Implement
+                    //events.insert();
                 }
                 
                 ImGui::EndMenu();
             }
-            if ( ImGui::BeginMenu( "Events" ) )
+            
+            bool refresh = false;
+            ImGui::MenuItem( "(Refresh...)", nullptr, &refresh );
+            if ( refresh )
             {
-                bool refresh = false;
-                ImGui::MenuItem( "(Refresh...)", nullptr, &refresh );
-                if ( refresh )
-                {
-                        loadEventList( editor.map.getCurrentMap() );
-                }
-                
-                for ( auto& event : events )
-                {
-                    bool selected = active == &event.second;
-                    ImGui::MenuItem( util::toString( event.first ).c_str(), nullptr, &selected, true );
-                    if ( selected )
-                    {
-                        active = &event.second;
-                    }
-                }
-                
-                for ( auto& event : eventBranches )
-                {
-                    bool selected = active == &event.second;
-                    ImGui::MenuItem( event.first.c_str(), nullptr, &selected, true );
-                    if ( selected )
-                    {
-                        active = &event.second;
-                    }
-                }
-                
-                ImGui::EndMenu();
+                loadEventList( editor.map.getCurrentMap() );
             }
+            ImGui::MenuItem( "", nullptr );
+            
+            for ( auto& event : events )
+            {
+                bool selected = active == &event.second;
+                ImGui::MenuItem( util::toString( event.first ).c_str(), nullptr, &selected, true );
+                if ( selected )
+                {
+                    active = &event.second;
+                }
+            }
+            
+            for ( auto& event : eventBranches )
+            {
+                bool selected = active == &event.second;
+                ImGui::MenuItem( event.first.c_str(), nullptr, &selected, true );
+                if ( selected )
+                {
+                    active = &event.second;
+                }
+            }
+            
             ImGui::EndMenu();
         }
         if ( ImGui::BeginMenu( "Reload" ) )
