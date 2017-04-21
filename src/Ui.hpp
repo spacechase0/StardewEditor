@@ -3,11 +3,11 @@
 
 #include <map>
 #include <set>
-#include <SFML/Audio/Music.hpp>
 #include <SFML/System/Clock.hpp>
 #include <string>
 
 #include "Event.hpp"
+#include "ui/SoundPlayer.hpp"
 
 class Editor;
 
@@ -27,6 +27,9 @@ class Ui
         void render( sf::RenderWindow& window );
         
         bool isMouseOutside() const;
+        
+        std::vector< std::string > getSoundCueList() const;
+        std::string getPathForSound( const std::string& cue ) const;
     
     private:
         Editor& editor;
@@ -43,9 +46,8 @@ class Ui
         std::string precTypeLabelsStr;
         std::map< char, std::string > enumValuesStr;
         
+        SoundPlayer player;
         std::map< std::string, std::vector< std::string > > sounds;
-        std::string soundCurrent;
-        sf::Music soundPlaying;
         
         void initMapList();
         void loadEventList( const std::string& map );

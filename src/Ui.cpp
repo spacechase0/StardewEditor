@@ -11,7 +11,8 @@
 #include "Event.hpp"
 
 Ui::Ui( Editor& theEditor )
-:   editor( theEditor )
+:   editor( theEditor ),
+    player( theEditor, ( * this ) )
 {
 }
 
@@ -21,6 +22,7 @@ void Ui::update()
     
     mainMenu();
     toolbar();
+    player.update();
     if ( active )
     {
         info();
@@ -33,11 +35,6 @@ void Ui::update()
 void Ui::update( const sf::Event& event )
 {
     ImGui::SFML::ProcessEvent( event );
-    
-    if ( soundCurrent != "" && soundPlaying.getStatus() == sf::Music::Stopped )
-    {
-        soundCurrent = "";
-    }
 }
 
 void Ui::render( sf::RenderWindow& window )
@@ -56,6 +53,22 @@ void Ui::render( sf::RenderWindow& window )
 bool Ui::isMouseOutside() const
 {
     return !ImGui::IsMouseHoveringAnyWindow();
+}
+
+std::vector< std::string > Ui::getSoundCueList() const
+{
+    std::vector< std::string > ret;
+    for ( const auto& entry : sounds )
+    {
+        ret.push_back( entry.first );
+    }
+    return ret;
+}
+
+std::string Ui::getPathForSound( const std::string& cue ) const
+{
+    std::string snd = sounds.at( cue )[ rand() % sounds.at( cue ).size() ];
+    return ( fs::path( editor.config.getExtractedSounds() ) / ( snd + ".wav" ) ).string();
 }
 
 void Ui::initMapList()
@@ -174,6 +187,8 @@ void Ui::reloadSoundList()
         
         sounds.insert( std::make_pair( cue, inds ) );
     }
+    
+    player.refreshList();
 }
 
 void Ui::mainMenu()
@@ -288,29 +303,12 @@ void Ui::mainMenu()
                 ImGui::EndMenu();
             }
             
-            ImGui::MenuItem( "", nullptr );
-            
-            for ( auto& sound : sounds )
+            bool selected = player.isShowing();
+            ImGui::MenuItem( "Player", nullptr, &selected );
+            if ( selected != player.isShowing() )
             {
-                bool selected = soundCurrent == sound.first;
-                ImGui::MenuItem( sound.first.c_str(), nullptr, &selected, true );
-                if ( selected && sound.first != soundCurrent )
-                {
-                    if ( soundCurrent != "" )
-                    {
-                        soundPlaying.stop();
-                    }
-                    soundCurrent = sound.first;
-                    std::string soundPath = ( fs::path( editor.config.getExtractedSounds() ) / ( sound.second[ 0 ] + ".wav" ) ).string();
-                    if ( !soundPlaying.openFromFile( soundPath ) )
-                    {
-                        util::log( "[WARN] Failed to open '$' as sf::Music.\n", soundPath );
-                    }
-                    else
-                    {
-                        soundPlaying.play();
-                    }
-                }
+                if ( selected ) player.show();
+                else player.hide();
             }
             
             ImGui::EndMenu();
@@ -326,7 +324,7 @@ void Ui::toolbar()
     style |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar;
     style |= ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoSavedSettings;
     
-    ImGui::SetNextWindowPos( ImVec2( -8, editor.window.getSize().y - 28 ) );
+    ImGui::SetNextWindowPos( ImVec2( -4, editor.window.getSize().y - 28 ) );
     ImGui::SetNextWindowSize( ImVec2( editor.window.getSize().x + 16, 28 ) );
     if ( ImGui::Begin( "", nullptr, style ) )
     {

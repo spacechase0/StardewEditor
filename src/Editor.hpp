@@ -19,7 +19,7 @@ class Editor
     public:
         static const char* CONFIG_FILE;
         
-        Editor( int argc,  char* argv[] );
+        Editor( int argc, char* argv[] );
         ~Editor();
         
         void run();
