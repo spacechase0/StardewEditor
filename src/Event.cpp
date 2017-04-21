@@ -223,7 +223,7 @@ namespace Event
         if ( slash == std::string::npos )
         {
             data.branchName = key;
-            parseCommands( value, 0 );
+            data.commands = parseCommands( value, 0 );
         }
         else
         {
