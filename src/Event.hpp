@@ -79,6 +79,9 @@ namespace Event
         
         static Data fromGameFormat( const std::string& line );
         std::string toGameFormat() const;
+        
+        int oldId;
+        std::string oldBranchName;
     };
 }
 

@@ -224,6 +224,7 @@ namespace Event
         if ( slash == std::string::npos )
         {
             data.branchName = key;
+            data.branchName.resize( 32,'\0' );
             data.commands = parseCommands( value, 0 );
         }
         else
@@ -236,12 +237,15 @@ namespace Event
             std::size_t s2 = value.find( '/', s1 + 1 );
             std::size_t s3 = value.find( '/', s2 + 1 );
             data.music = value.substr( 0, s1 );
+            data.music.resize( 32,'\0' );
             data.viewport = sf::Vector2i( util::fromString< int >( value.substr( s1 + 1, sp - s1 - 1 ) ), 
                                           util::fromString< int >( value.substr( sp + 1, s2 - sp - 1 ) ) );
             data.actors = parseActors( value.substr( s2 + 1, s3 - s2 - 1 ) );
             data.commands = parseCommands( value, 3 );
         }
         
+        data.oldId = data.id;
+        data.oldBranchName = data.branchName;
         
         return data;
     }

@@ -14,11 +14,11 @@
 
 namespace
 {
-    bool wasItemActive()
+    bool wasItemActive( int check = -1 )
     {
         ImGuiContext* ctx = ImGui::GetCurrentContext();
         ImGuiWindow* window = ctx->CurrentWindow;
-        auto id = window->DC.LastItemId;
+        auto id = check == -1 ? window->DC.LastItemId : check;
         return ctx->ActiveIdPreviousFrame == id && ctx->ActiveId != id;
     }
 }
@@ -155,7 +155,7 @@ void Ui::loadEventList( const std::string& map )
             }
             else
             {
-                eventBranches.insert( std::make_pair( event.branchName, event ) );
+                eventBranches.insert( std::make_pair( event.branchName.c_str(), event ) );
             }
         }
     }
@@ -426,11 +426,35 @@ void Ui::info()
         if ( active->id != -1 )
         {
             ImGui::InputInt( "Event ID", &active->id );
+            if ( wasItemActive( ImGui::GetCurrentWindow()->GetID( "Event ID" ) ) ||
+                 !ImGui::IsItemActive() && active->oldId != active->id )
+            {
+                Event::Data data = ( * active );
+                auto it = events.find( active->oldId );
+                if ( it != events.end() )
+                    events.erase( it );
+                data.oldId = data.id;
+                events.insert( std::make_pair( data.id, data ) );
+                active = &events[ data.id ];
+            }
             ImGui::InputText( "Music", &active->music[ 0 ], 31 );
             ImGui::InputInt2( "Viewport", &active->viewport.x );
         }
         else
+        {
             ImGui::InputText( "Event Name", &active->branchName[ 0 ], 31 );
+            if ( wasItemActive() ||
+                 !ImGui::IsItemActive() && active->oldBranchName != active->branchName )
+            {
+                Event::Data data = ( * active );
+                auto it = eventBranches.find( active->oldBranchName.c_str() );
+                if ( it != eventBranches.end() )
+                    eventBranches.erase( it );
+                data.oldBranchName = data.branchName;
+                eventBranches.insert( std::make_pair( data.branchName.c_str(), data ) );
+                active = &eventBranches[ data.branchName.c_str() ];
+            }
+        }
         
     }
     ImGui::End();
