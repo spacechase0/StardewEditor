@@ -27,6 +27,8 @@ class Config
         std::string unpackedContent;
         std::string dataFolder;
         std::string extractedSounds;
+        
+        friend class Ui; // TODO: A specific ui window
 };
 
 #endif // CONFIG_HPP

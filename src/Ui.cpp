@@ -35,6 +35,7 @@ void Ui::update()
     
     mainMenu();
     toolbar();
+    other();
     player.update();
     if ( active )
     {
@@ -42,18 +43,6 @@ void Ui::update()
         preconditions();
         actors();
         commands();
-    }
-    
-    if ( exported != "" )
-    {
-        if ( ImGui::Begin( "Exported" ) )
-        {
-            if ( exportedMulti )
-                ImGui::InputTextMultiline( "", &exported[ 0 ], exported.length(), ImVec2( 0, 0 ), ImGuiInputTextFlags_ReadOnly );
-            else
-                ImGui::InputText( "", &exported[ 0 ], exported.length(), ImGuiInputTextFlags_ReadOnly );
-        }
-        ImGui::End();
     }
 }
 
@@ -98,6 +87,10 @@ std::string Ui::getPathForSound( const std::string& cue ) const
 
 void Ui::initMapList()
 {
+    if ( !fs::exists( fs::path( editor.config.getDataFolder() ) / "maps" ) ||
+         !fs::exists( fs::path( editor.config.getUnpackedContentFolder() ) / "Data" / "Events" ) )
+        return;
+    
     maps.clear();
     for ( fs::directory_iterator it( fs::path( editor.config.getDataFolder() ) / "maps" );
           it != fs::directory_iterator(); ++it )
@@ -397,6 +390,23 @@ void Ui::mainMenu()
             ImGui::EndMenu();
         }
         
+        if ( ImGui::BeginMenu( "Other" ) )
+        {
+            bool wasShowingConfig = showingConfig;
+            ImGui::MenuItem( "Show config window", nullptr, &showingConfig );
+            if ( showingConfig != wasShowingConfig && !showingConfig )
+            {
+                editor.config.saveToFile( Editor::CONFIG_FILE );
+            }
+            
+            bool selected = exported != "";
+            ImGui::MenuItem( "Show export window", nullptr, &selected, selected );
+            if ( !selected )
+                exported = "";
+            
+            ImGui::EndMenu();
+        }
+        
         ImGui::EndMainMenuBar();
     }
 }
@@ -428,6 +438,33 @@ void Ui::toolbar()
         ImGui::Text( ( "Pixel: " + pixelPos ).c_str() );
     }
     ImGui::End();
+}
+
+void Ui::other()
+{
+    
+    if ( exported != "" )
+    {
+        if ( ImGui::Begin( "Exported" ) )
+        {
+            if ( exportedMulti )
+                ImGui::InputTextMultiline( "", &exported[ 0 ], exported.length(), ImVec2( 0, 0 ), ImGuiInputTextFlags_ReadOnly );
+            else
+                ImGui::InputText( "", &exported[ 0 ], exported.length(), ImGuiInputTextFlags_ReadOnly );
+        }
+        ImGui::End();
+    }
+    
+    if ( showingConfig )
+    {
+        if ( ImGui::Begin( "Configuration" ) )
+        {
+            ImGui::InputText( "Unpacked content", &editor.config.unpackedContent[ 0 ], 511 );
+            //ImGui::InputText( "Data path", &editor.config.dataFolder[ 0 ], 511 );
+            ImGui::InputText( "Extracted sounds", &editor.config.extractedSounds[ 0 ], 511 );
+        }
+        ImGui::End();
+    }
 }
 
 void Ui::info()

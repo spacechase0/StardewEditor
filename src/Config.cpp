@@ -46,6 +46,10 @@ bool Config::loadFromFile( const std::string& path )
             extractedSounds = val;
     }
     
+    unpackedContent.resize( 512, '\0' );
+    dataFolder.resize( 512, '\0' );
+    extractedSounds.resize( 512, '\0' );
+    
     return true;
 }
 
@@ -55,9 +59,9 @@ bool Config::saveToFile( const std::string& path ) const
     if ( !file )
         return false;
     
-    file << util::format( "$=$\n", OPT_UNPACKED_CONTENT, unpackedContent );
-    file << util::format( "$=$\n", OPT_DATA, dataFolder );
-    file << util::format( "$=$\n", OPT_EXTRACTED_SOUNDS, extractedSounds );
+    file << util::format( "$=$\n", OPT_UNPACKED_CONTENT, unpackedContent.c_str() );
+    file << util::format( "$=$\n", OPT_DATA, dataFolder.c_str() );
+    file << util::format( "$=$\n", OPT_EXTRACTED_SOUNDS, extractedSounds.c_str() );
     
     return true;
 }
@@ -65,31 +69,34 @@ bool Config::saveToFile( const std::string& path ) const
 void Config::setUnpackedContentFolder( const std::string& path )
 {
     unpackedContent = path;
+    unpackedContent.resize( 512, '\0' );
 }
 
 std::string Config::getUnpackedContentFolder() const
 {
-    return unpackedContent;
+    return unpackedContent.c_str();
 }
 
 void Config::setDataFolder( const std::string& path )
 {
     dataFolder = path;
+    unpackedContent.resize( 512, '\0' );
 }
 
 std::string Config::getDataFolder() const
 {
-    return dataFolder;
+    return dataFolder.c_str();
 }
 
 void Config::setExtractedSounds( const std::string& theExtractedSounds )
 {
     extractedSounds = theExtractedSounds;
+    unpackedContent.resize( 512, '\0' );
 }
 
 std::string Config::getExtractedSounds() const
 {
-    return extractedSounds;
+    return extractedSounds.c_str();
 }
 
 void Config::reset()
@@ -97,4 +104,8 @@ void Config::reset()
     unpackedContent = "./Content";
     dataFolder = "./data";
     extractedSounds = "./sounds";
+    
+    unpackedContent.resize( 512, '\0' );
+    dataFolder.resize( 512, '\0' );
+    extractedSounds.resize( 512, '\0' );
 }

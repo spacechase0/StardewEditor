@@ -36,6 +36,8 @@ class Ui
         sf::Clock delta;
         bool firstUpdate = true;
 
+        bool showingConfig = false;
+
         std::set< std::string > maps;
         std::set< std::string > eventFiles;
         std::map< int, Event::Data > events;
@@ -60,6 +62,7 @@ class Ui
         
         void mainMenu();
         void toolbar();
+        void other();
         void info();
         void preconditions();
         void actors();
