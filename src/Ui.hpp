@@ -3,6 +3,7 @@
 
 #include <map>
 #include <set>
+#include <SFML/Audio/Music.hpp>
 #include <SFML/System/Clock.hpp>
 #include <string>
 
@@ -43,6 +44,8 @@ class Ui
         std::map< char, std::string > enumValuesStr;
         
         std::map< std::string, std::vector< std::string > > sounds;
+        std::string soundCurrent;
+        sf::Music soundPlaying;
         
         void initMapList();
         void loadEventList( const std::string& map );

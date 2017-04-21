@@ -33,6 +33,11 @@ void Ui::update()
 void Ui::update( const sf::Event& event )
 {
     ImGui::SFML::ProcessEvent( event );
+    
+    if ( soundCurrent != "" && soundPlaying.getStatus() == sf::Music::Stopped )
+    {
+        soundCurrent = "";
+    }
 }
 
 void Ui::render( sf::RenderWindow& window )
@@ -287,11 +292,24 @@ void Ui::mainMenu()
             
             for ( auto& sound : sounds )
             {
-                bool selected = false;
+                bool selected = soundCurrent == sound.first;
                 ImGui::MenuItem( sound.first.c_str(), nullptr, &selected, true );
-                if ( selected )
+                if ( selected && sound.first != soundCurrent )
                 {
-                    // blah
+                    if ( soundCurrent != "" )
+                    {
+                        soundPlaying.stop();
+                    }
+                    soundCurrent = sound.first;
+                    std::string soundPath = ( fs::path( editor.config.getExtractedSounds() ) / ( sound.second[ 0 ] + ".wav" ) ).string();
+                    if ( !soundPlaying.openFromFile( soundPath ) )
+                    {
+                        util::log( "[WARN] Failed to open '$' as sf::Music.\n", soundPath );
+                    }
+                    else
+                    {
+                        soundPlaying.play();
+                    }
                 }
             }
             

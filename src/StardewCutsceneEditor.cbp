@@ -18,6 +18,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="-lsc0-utility-d" />
+					<Add option="-lsfml-audio-s-d" />
 					<Add option="-lsfml-graphics-s-d" />
 					<Add option="-lsfml-window-s-d" />
 					<Add option="-lsfml-system-s-d" />
@@ -38,6 +39,7 @@
 				<Linker>
 					<Add option="-s" />
 					<Add option="-lsc0-utility" />
+					<Add option="-lsfml-audio-s" />
 					<Add option="-lsfml-graphics-s" />
 					<Add option="-lsfml-window-s" />
 					<Add option="-lsfml-system-s" />
@@ -52,6 +54,12 @@
 			<Add option="-DSFML_STATIC" />
 		</Compiler>
 		<Linker>
+			<Add option="-lopenal32" />
+			<Add option="-lflac" />
+			<Add option="-lvorbisenc" />
+			<Add option="-lvorbisfile" />
+			<Add option="-lvorbis" />
+			<Add option="-logg" />
 			<Add option="-lfreetype" />
 			<Add option="-ljpeg" />
 			<Add option="-lopengl32" />
