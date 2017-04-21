@@ -42,9 +42,12 @@ class Ui
         std::string precTypeLabelsStr;
         std::map< char, std::string > enumValuesStr;
         
+        std::map< std::string, std::vector< std::string > > sounds;
+        
         void initMapList();
         void loadEventList( const std::string& map );
         void reloadPreconditionTypes();
+        void reloadSoundList();
         
         void mainMenu();
         void toolbar();

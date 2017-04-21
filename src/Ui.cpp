@@ -41,6 +41,7 @@ void Ui::render( sf::RenderWindow& window )
     {
         initMapList();
         reloadPreconditionTypes();
+        reloadSoundList();
         firstUpdate = false;
     }
     
@@ -146,6 +147,30 @@ void Ui::reloadPreconditionTypes()
     precTypeLabelsStr += '\0';
 }
 
+void Ui::reloadSoundList()
+{
+    std::ifstream file( ( fs::path( editor.config.getDataFolder() ) / "soundCues.txt" ).string() );
+    if ( !file )
+        return;
+    
+    sounds.clear();
+    while ( true )
+    {
+        std::string line;
+        std::getline( file, line );
+        if ( !file )
+            break;
+        
+        std::size_t eq = line.find( '=' );
+        if ( eq == std::string::npos ) continue;
+        
+        std::string cue = line.substr( 0, eq );
+        std::vector< std::string > inds = util::tokenize( line.substr( eq + 1 ), "," );
+        
+        sounds.insert( std::make_pair( cue, inds ) );
+    }
+}
+
 void Ui::mainMenu()
 {
     if ( ImGui::BeginMainMenuBar() )
@@ -239,6 +264,34 @@ void Ui::mainMenu()
                 if ( selected )
                 {
                     active = &event.second;
+                }
+            }
+            
+            ImGui::EndMenu();
+        }
+        if ( ImGui::BeginMenu( "Sounds" ) )
+        {
+            if ( ImGui::BeginMenu( "Reload" ) )
+            {
+                bool refresh = false;
+                ImGui::MenuItem( "Sound list", nullptr, &refresh );
+                if ( refresh )
+                {
+                    reloadSoundList();
+                }
+                
+                ImGui::EndMenu();
+            }
+            
+            ImGui::MenuItem( "", nullptr );
+            
+            for ( auto& sound : sounds )
+            {
+                bool selected = false;
+                ImGui::MenuItem( sound.first.c_str(), nullptr, &selected, true );
+                if ( selected )
+                {
+                    // blah
                 }
             }
             
