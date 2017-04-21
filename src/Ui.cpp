@@ -152,11 +152,16 @@ void Ui::mainMenu()
     {
         if ( ImGui::BeginMenu( "Maps" ) )
         {
-            bool refresh = false;
-            ImGui::MenuItem( "(Refresh...)", nullptr, &refresh );
-            if ( refresh )
+            if ( ImGui::BeginMenu( "Reload" ) )
             {
-                initMapList();
+                bool refresh = false;
+                ImGui::MenuItem( "Map list", nullptr, &refresh );
+                if ( refresh )
+                {
+                    initMapList();
+                }
+                
+                ImGui::EndMenu();
             }
             ImGui::MenuItem( "", nullptr );
             
@@ -196,12 +201,25 @@ void Ui::mainMenu()
                 ImGui::EndMenu();
             }
             
-            bool refresh = false;
-            ImGui::MenuItem( "(Refresh...)", nullptr, &refresh );
-            if ( refresh )
+            if ( ImGui::BeginMenu( "Reload" ) )
             {
-                loadEventList( editor.map.getCurrentMap() );
+                bool refresh = false;
+                ImGui::MenuItem( "Precondition types", nullptr, &refresh );
+                if ( refresh )
+                {
+                    reloadPreconditionTypes();
+                }
+                
+                refresh = false;
+                ImGui::MenuItem( "Current map events", nullptr, &refresh );
+                if ( refresh )
+                {
+                    loadEventList( editor.map.getCurrentMap() );
+                }
+                
+                ImGui::EndMenu();
             }
+            
             ImGui::MenuItem( "", nullptr );
             
             for ( auto& event : events )
@@ -224,16 +242,6 @@ void Ui::mainMenu()
                 }
             }
             
-            ImGui::EndMenu();
-        }
-        if ( ImGui::BeginMenu( "Reload" ) )
-        {
-            bool refresh = false;
-            ImGui::MenuItem( "Precondition types", nullptr, &refresh );
-            if ( refresh )
-            {
-                reloadPreconditionTypes();
-            }
             ImGui::EndMenu();
         }
         
