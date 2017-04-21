@@ -8,6 +8,21 @@
 Map::Map( Editor& theEditor )
 :   editor( theEditor )
 {
+    sf::Image gridImage;
+    gridImage.create( TILE_SIZE, TILE_SIZE, sf::Color( 0, 0, 0, 0 ) );
+    for ( int i = 0; i < TILE_SIZE * TILE_SIZE; ++i )
+    {
+        int ix = i % TILE_SIZE;
+        int iy = i / TILE_SIZE;
+        
+        sf::Color col = sf::Color( 0, 0, 0, 0 );
+        if ( ix == 0 || iy == 0 || ix == TILE_SIZE - 1 || iy == TILE_SIZE - 1 )
+        {
+            gridImage.setPixel( ix, iy, sf::Color( 0, 0, 0, 64 ) );
+        }
+    }
+    grid.loadFromImage( gridImage );
+    grid.setRepeated( true );
 }
 
 void Map::update()
@@ -75,6 +90,13 @@ void Map::render( sf::RenderWindow& window )
     if ( current != "" )
     {
         window.draw( spr );
+        
+        sf::Vertex v[ 4 ];
+        v[ 0 ] = sf::Vertex( sf::Vector2f( 0, 0 ), sf::Vector2f( 0, 0 ) );
+        v[ 1 ] = sf::Vertex( sf::Vector2f( tex.getSize().x, 0 ), sf::Vector2f( tex.getSize().x, 0 ) );
+        v[ 2 ] = sf::Vertex( sf::Vector2f( tex.getSize() ), sf::Vector2f( tex.getSize() ) );
+        v[ 3 ] = sf::Vertex( sf::Vector2f( 0, tex.getSize().y ), sf::Vector2f( 0, tex.getSize().y ) );
+        window.draw( &v[ 0 ], 4, sf::PrimitiveType::Quads, &grid );
     }
     for ( auto& entry : actors )
     {

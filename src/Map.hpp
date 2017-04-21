@@ -53,6 +53,8 @@ class Map
         sf::Texture tex;
         sf::Sprite spr;
         
+        sf::Texture grid;
+        
         std::map< std::string, Actor > actors;
         
         bool dragging = false;
