@@ -18,11 +18,15 @@ class Config
         void setDataFolder( const std::string& path );
         std::string getDataFolder() const;
         
+        void setExtractedSounds( const std::string& theExtractedSounds );
+        std::string getExtractedSounds() const;
+        
         void reset();
     
     private:
         std::string unpackedContent;
         std::string dataFolder;
+        std::string extractedSounds;
 };
 
 #endif // CONFIG_HPP

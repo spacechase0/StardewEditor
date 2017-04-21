@@ -7,6 +7,7 @@ namespace
 {
     const char* OPT_UNPACKED_CONTENT = "unpacked_content";
     const char* OPT_DATA = "data";
+    const char* OPT_EXTRACTED_SOUNDS = "extracted_sounds";
 }
 
 Config::Config()
@@ -41,6 +42,8 @@ bool Config::loadFromFile( const std::string& path )
             unpackedContent = val;
         else if ( opt == OPT_DATA )
             dataFolder = val;
+        else if ( opt == OPT_EXTRACTED_SOUNDS )
+            extractedSounds = val;
     }
     
     return true;
@@ -54,6 +57,7 @@ bool Config::saveToFile( const std::string& path ) const
     
     file << util::format( "$=$\n", OPT_UNPACKED_CONTENT, unpackedContent );
     file << util::format( "$=$\n", OPT_DATA, dataFolder );
+    file << util::format( "$=$\n", OPT_EXTRACTED_SOUNDS, extractedSounds );
     
     return true;
 }
@@ -78,8 +82,19 @@ std::string Config::getDataFolder() const
     return dataFolder;
 }
 
+void Config::setExtractedSounds( const std::string& theExtractedSounds )
+{
+    extractedSounds = theExtractedSounds;
+}
+
+std::string Config::getExtractedSounds() const
+{
+    return extractedSounds;
+}
+
 void Config::reset()
 {
     unpackedContent = "./Content";
     dataFolder = "./data";
+    extractedSounds = "./sounds";
 }
