@@ -76,6 +76,10 @@ void Map::render( sf::RenderWindow& window )
     {
         window.draw( spr );
     }
+    for ( auto& entry : actors )
+    {
+        entry.second.render( window );
+    }
 }
 
 void Map::changeCurrentMap( const std::string& map )
@@ -98,4 +102,47 @@ std::string Map::getCurrentMap() const
 sf::Vector2f Map::pixelToWorld( sf::Vector2i pixel ) const
 {
     return editor.window.mapPixelToCoords( pixel, view );
+}
+
+void Map::clearActors()
+{
+    actors.clear();
+}
+
+Actor& Map::addActor( const std::string& name, sf::Vector2i pos, int facing )
+{
+    auto it = actors.insert( std::make_pair( name, Actor( editor, name, pos, facing ) ) );
+    it.first->second.init();
+    return it.first->second;
+}
+
+Actor* Map::getActor( const std::string& name )
+{
+    auto it = actors.find( name );
+    if ( it == actors.end() )
+        return nullptr;
+    return &it->second;
+}
+
+const Actor* Map::getActor( const std::string& name ) const
+{
+    auto it = actors.find( name );
+    if ( it == actors.end() )
+        return nullptr;
+    return &it->second;
+}
+
+void Map::removeActor( const std::string& name )
+{
+    auto it = actors.find( name );
+    if ( it != actors.end() )
+        actors.erase( it );
+}
+
+std::vector< std::string > Map::getActorList() const
+{
+    std::vector< std::string > ret;
+    for ( const auto& actor : actors )
+        ret.push_back( actor.first );
+    return ret;
 }

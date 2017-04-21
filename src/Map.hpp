@@ -1,10 +1,14 @@
 #ifndef MAP_HPP
 #define MAP_HPP
 
+#include <map>
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/View.hpp>
 #include <string>
+#include <vector>
+
+#include "Actor.hpp"
 
 class Editor;
 
@@ -32,6 +36,13 @@ class Map
         } clickMode = Panning;
         
         sf::Vector2f pixelToWorld( sf::Vector2i pixel ) const;
+        
+        void clearActors();
+        Actor& addActor( const std::string& name, sf::Vector2i pos, int facing );
+        Actor* getActor( const std::string& name );
+        const Actor* getActor( const std::string& name ) const;
+        void removeActor( const std::string& name );
+        std::vector< std::string > getActorList() const;
     
     private:
         Editor& editor;
@@ -41,6 +52,8 @@ class Map
         std::string current;
         sf::Texture tex;
         sf::Sprite spr;
+        
+        std::map< std::string, Actor > actors;
         
         bool dragging = false;
         sf::Vector2f dragFrom;

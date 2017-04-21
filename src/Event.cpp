@@ -45,6 +45,7 @@ namespace
             actor.name = tokens[ i * 4 + 0 ];
             actor.pos = sf::Vector2i( util::fromString< int >( tokens[ i * 4 + 1 ] ), util::fromString< int >( tokens[ i * 4 + 2 ] ) );
             actor.facing = util::fromString< int >( tokens[ i * 4 + 3 ] );
+            actor.oldName = actor.name;
             
             ret.push_back( actor );
         }

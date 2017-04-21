@@ -66,6 +66,8 @@
 			<Add option="-lgdi32" />
 			<Add option="-lwinmm" />
 		</Linker>
+		<Unit filename="Actor.cpp" />
+		<Unit filename="Actor.hpp" />
 		<Unit filename="Config.cpp" />
 		<Unit filename="Config.hpp" />
 		<Unit filename="Editor.cpp" />

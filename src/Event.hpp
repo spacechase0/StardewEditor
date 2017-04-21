@@ -8,8 +8,8 @@
 
 namespace Event
 {
-            static_assert( offsetof( sf::Vector2i, x ) + sizeof( int ) == offsetof( sf::Vector2i, y ), "Too lazy to make proper array, so actor.pos must be like one" );
-            
+    static_assert( offsetof( sf::Vector2i, x ) + sizeof( int ) == offsetof( sf::Vector2i, y ), "Too lazy to make proper array, so actor.pos must be like one" );
+    
     enum ParamType : char
     {
         Integer = 'i',
@@ -51,6 +51,8 @@ namespace Event
         std::string name;
         sf::Vector2i pos = sf::Vector2i( 0, 0 );
         int facing = 0;
+        
+        std::string oldName;
     };
     
     struct Command

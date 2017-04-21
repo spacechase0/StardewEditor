@@ -2,6 +2,7 @@
 
 #include <boost/filesystem.hpp>
 #include <imgui.h>
+#include <imgui_internal.h> // I'm so terrible
 #include <imgui-sfml.h>
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Window/Mouse.hpp>
@@ -9,6 +10,17 @@
 
 #include "Editor.hpp"
 #include "Event.hpp"
+
+namespace
+{
+    bool wasItemActive()
+    {
+        ImGuiContext* ctx = ImGui::GetCurrentContext();
+        ImGuiWindow* window = ctx->CurrentWindow;
+        auto id = window->DC.LastItemId;
+        return ctx->ActiveIdPreviousFrame == id && ctx->ActiveId != id;
+    }
+}
 
 Ui::Ui( Editor& theEditor )
 :   editor( theEditor ),
@@ -270,10 +282,19 @@ void Ui::mainMenu()
             for ( auto& event : events )
             {
                 bool selected = active == &event.second;
+                bool wasSelected = selected;
                 ImGui::MenuItem( util::toString( event.first ).c_str(), nullptr, &selected, true );
                 if ( selected )
                 {
                     active = &event.second;
+                    if ( !wasSelected )
+                    {
+                        editor.map.clearActors();
+                        for ( const Event::Actor& actor : event.second.actors )
+                        {
+                            editor.map.addActor( actor.name, actor.pos, actor.facing );
+                        }
+                    }
                 }
             }
             
@@ -507,15 +528,33 @@ void Ui::actors()
         for ( auto actorIt = active->actors.begin(); actorIt != active->actors.end(); ++actorIt, ++actorNum )
         {
             Event::Actor& actor = ( * actorIt );
+            Actor* mapActor = editor.map.getActor( actor.oldName.c_str() );
             actor.name.resize( 32, '\0' );
             ImGui::InputText( util::format( "Name##actor$", actorNum ).c_str(), &actor.name[ 0 ], 31 );
-            ImGui::InputInt2( util::format( "Position##actor$", actorNum ).c_str(), &actor.pos.x );
-            ImGui::InputInt( util::format( "Facing##actor$", actorNum ).c_str(), &actor.facing );
-            actor.facing = actor.facing % 4;
+            if ( wasItemActive() )
+            {
+                if ( mapActor )
+                    editor.map.removeActor( actor.oldName.c_str() );
+                editor.map.addActor( actor.name.c_str(), actor.pos, actor.facing );
+                actor.oldName = actor.name;
+            }
+            if ( ImGui::InputInt2( util::format( "Position##actor$", actorNum ).c_str(), &actor.pos.x ) )
+            {
+                if ( mapActor )
+                    mapActor->setPosition( actor.pos );
+            }
+            if ( ImGui::InputInt( util::format( "Facing##actor$", actorNum ).c_str(), &actor.facing ) )
+            {
+                actor.facing = actor.facing % 4;
+                if ( mapActor )
+                    mapActor->setFacing( actor.facing );
+            }
             
             if ( ImGui::Button( util::format( "Delete actor##actor$", actorNum ).c_str() ) )
             {
                 active->actors.erase( actorIt );
+                if ( mapActor )
+                    editor.map.removeActor( actor.name.c_str() );
                 break;
             }
             
