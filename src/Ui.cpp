@@ -213,7 +213,7 @@ void Ui::mainMenu()
             for ( const auto& map : maps )
             {
                 bool selected = editor.map.getCurrentMap() == map;
-                ImGui::MenuItem( map.c_str(), nullptr, &selected, eventFiles.find( map ) != eventFiles.end() );
+                ImGui::MenuItem( map.c_str(), nullptr, &selected/*, eventFiles.find( map ) != eventFiles.end()*/ );
                 if ( selected && editor.map.getCurrentMap() != map )
                 {
                     editor.map.changeCurrentMap( map );
