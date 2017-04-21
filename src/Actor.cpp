@@ -29,6 +29,8 @@ void Actor::setPosition( sf::Vector2i thePos )
     spr.setPosition( tilePos.x * TILE_SIZE, tilePos.y * TILE_SIZE );
     if ( farmerData )
     {
+        farmerData->arms.setPosition( spr.getPosition() );
+        farmerData->legs.setPosition( spr.getPosition() );
         farmerData->shirt.setPosition( spr.getPosition() );
         farmerData->shirt.move( 4, -1 );
         farmerData->hair.setPosition( spr.getPosition() );
