@@ -41,6 +41,7 @@ class Ui
         std::map< int, Event::Data > events;
         std::map< std::string, Event::Data > eventBranches;
         Event::Data* active = nullptr;
+        Event::Data dummy;
         
         std::string exported;
         bool exportedMulti = false;

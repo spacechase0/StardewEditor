@@ -256,16 +256,18 @@ void Ui::mainMenu()
                 ImGui::MenuItem( "w/ ID", nullptr, &selected );
                 if ( selected )
                 {
-                    /// TODO: Implement
-                    //events.insert();
+                    dummy = Event::Data();
+                    dummy.id = 99999;
+                    active = &dummy;
                 }
                 
                 selected = false;
                 ImGui::MenuItem( "Named", nullptr, &selected );
                 if ( selected )
                 {
-                    /// TODO: Implement
-                    //events.insert();
+                    dummy = Event::Data();
+                    dummy.branchName = "...";
+                    active = &dummy;
                 }
                 
                 ImGui::EndMenu();
