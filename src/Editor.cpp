@@ -8,7 +8,7 @@
 
 namespace fs = boost::filesystem;
 
-const char* Editor::CONFIG_FILE = "cutscene-editor.cfg";
+const char* Editor::CONFIG_FILE = "editor.cfg";
 
 Editor::Editor( int argc, char* argv[] )
 :   map( * this ),
@@ -30,7 +30,7 @@ Editor::~Editor()
 
 void Editor::run()
 {
-    window.create( sf::VideoMode( 800, 600 ), "Stardew Cutscene Editor" );
+    window.create( sf::VideoMode( 800, 600 ), "Stardew Editor" );
     window.setFramerateLimit( 60 );
     ImGui::SFML::Init( window );
     

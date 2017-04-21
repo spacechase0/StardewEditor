@@ -2,12 +2,12 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="StardewCutsceneEditor" />
+		<Option title="StardewEditor" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
-				<Option output="../StardewCutsceneEditor_Debug" prefix_auto="1" extension_auto="1" />
+				<Option output="../StardewEditor_Debug" prefix_auto="1" extension_auto="1" />
 				<Option working_dir=".." />
 				<Option object_output="../obj/Debug/" />
 				<Option type="1" />
@@ -27,7 +27,7 @@
 				</Linker>
 			</Target>
 			<Target title="Release">
-				<Option output="../StardewCutsceneEditor" prefix_auto="1" extension_auto="1" />
+				<Option output="../StardewEditor" prefix_auto="1" extension_auto="1" />
 				<Option working_dir=".." />
 				<Option object_output="../obj/Release/" />
 				<Option type="1" />
