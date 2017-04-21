@@ -259,6 +259,7 @@ void Ui::mainMenu()
                     dummy = Event::Data();
                     dummy.id = 99999;
                     active = &dummy;
+                    editor.map.clearActors();
                 }
                 
                 selected = false;
@@ -268,6 +269,7 @@ void Ui::mainMenu()
                     dummy = Event::Data();
                     dummy.branchName = "...";
                     active = &dummy;
+                    editor.map.clearActors();
                 }
                 
                 ImGui::EndMenu();
@@ -343,7 +345,7 @@ void Ui::mainMenu()
                         editor.map.clearActors();
                         for ( const Event::Actor& actor : event.second.actors )
                         {
-                            editor.map.addActor( actor.name, actor.pos, actor.facing );
+                            editor.map.addActor( actor.name.c_str(), actor.pos, actor.facing );
                         }
                     }
                 }
@@ -352,10 +354,19 @@ void Ui::mainMenu()
             for ( auto& event : eventBranches )
             {
                 bool selected = active == &event.second;
+                bool wasSelected = selected;
                 ImGui::MenuItem( event.first.c_str(), nullptr, &selected, true );
                 if ( selected )
                 {
                     active = &event.second;
+                    if ( !wasSelected )
+                    {
+                        editor.map.clearActors();
+                        for ( const Event::Actor& actor : event.second.actors )
+                        {
+                            editor.map.addActor( actor.name.c_str(), actor.pos, actor.facing );
+                        }
+                    }
                 }
             }
             
