@@ -42,6 +42,9 @@ class Ui
         std::map< std::string, Event::Data > eventBranches;
         Event::Data* active = nullptr;
         
+        std::string exported;
+        bool exportedMulti = false;
+        
         std::vector< std::string > precTypeLabels;
         std::string precTypeLabelsStr;
         std::map< char, std::string > enumValuesStr;

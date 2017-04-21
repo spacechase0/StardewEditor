@@ -6,6 +6,7 @@
 #include <imgui-sfml.h>
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Window/Mouse.hpp>
+#include <util/File.hpp>
 #include <util/String.hpp>
 
 #include "Editor.hpp"
@@ -41,6 +42,18 @@ void Ui::update()
         preconditions();
         actors();
         commands();
+    }
+    
+    if ( exported != "" )
+    {
+        if ( ImGui::Begin( "Exported" ) )
+        {
+            if ( exportedMulti )
+                ImGui::InputTextMultiline( "", &exported[ 0 ], exported.length(), ImVec2( 0, 0 ), ImGuiInputTextFlags_ReadOnly );
+            else
+                ImGui::InputText( "", &exported[ 0 ], exported.length(), ImGuiInputTextFlags_ReadOnly );
+        }
+        ImGui::End();
     }
 }
 
@@ -272,6 +285,42 @@ void Ui::mainMenu()
                 if ( refresh )
                 {
                     loadEventList( editor.map.getCurrentMap() );
+                }
+                
+                ImGui::EndMenu();
+            }
+            
+            if ( ImGui::BeginMenu( "Export" ) )
+            {
+                bool selected = false;
+                ImGui::MenuItem( "Current", nullptr, &selected, active != nullptr );
+                if ( selected )
+                {
+                    exported = active->toGameFormat();
+                    exportedMulti = false;
+                }
+                
+                selected = false;
+                ImGui::MenuItem( "All", nullptr, &selected );
+                if ( selected )
+                {
+                    std::stringstream ss;
+                    std::ifstream file( ( fs::path( editor.config.getDataFolder() ) / "eventHeader.txt" ).string() );
+                    while ( true )
+                    {
+                        std::string line;
+                        std::getline( file, line );
+                        if ( !file )
+                            break;
+                        ss << line << std::endl;
+                    }
+                    for ( const auto& entry : events )
+                        ss << "    " << entry.second.toGameFormat() << " #!String" << std::endl;
+                    for ( const auto& entry : eventBranches )
+                        ss << "    " << entry.second.toGameFormat() << " #!String" << std::endl;
+                    ss << std::endl;
+                    exported = ss.str();
+                    exportedMulti = true;
                 }
                 
                 ImGui::EndMenu();

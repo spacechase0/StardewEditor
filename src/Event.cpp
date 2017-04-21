@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cstdlib>
 #include <fstream>
+#include <sstream>
 #include <util/String.hpp>
 
 namespace
@@ -24,7 +25,7 @@ namespace
                 if ( prec.params.size() != paramTypes.size() &&
                      std::find( paramTypes.begin(), paramTypes.end(), Event::ParamType::EnumMany ) == paramTypes.end() )
                 {
-                    util::log( "[WARN] Precondition parameters for \"$\" doesn't match its type. ($ vs $)\n", token, prec.params.size(), Event::PreconditionType::types[ prec.type ].paramTypes.size() );
+                    //util::log( "[WARN] Precondition parameters for \"$\" doesn't match its type. ($ vs $)\n", token, prec.params.size(), Event::PreconditionType::types[ prec.type ].paramTypes.size() );
                 }
             }
             
@@ -247,6 +248,70 @@ namespace Event
     
     std::string Data::toGameFormat() const
     {
-        return "";
+        std::stringstream ss;
+        if ( id != -1 )
+        {
+            ss << id;
+            for ( const Precondition& prec : preconditions )
+            {
+                ss << '/' << prec.type;
+                for ( const std::string& param : prec.params )
+                    ss << ' ' << param.c_str();
+            }
+        }
+        else
+        {
+            ss << branchName;
+        }
+        ss << ": \"";
+        if ( id != -1 )
+        {
+            ss << music.c_str() << '/' << viewport.x << ' ' << viewport.y << '/';
+            bool firstActor = true;
+            for ( const Actor& actor : actors )
+            {
+                if ( !firstActor )
+                    ss << ' ';
+                firstActor = false;
+                ss << actor.name.c_str() << ' ' << actor.pos.x << ' ' << actor.pos.y << ' ' << actor.facing;
+            }
+            ss << '/';
+        }
+        bool firstCmd = true;
+        for ( const Command& cmd : commands )
+        {
+            if ( !firstCmd )
+                ss << '/';
+            firstCmd = false;
+            
+            std::string c = cmd.cmd.c_str();
+            for ( std::size_t i = c.find( '"' ); i != std::string::npos; i = c.find( '"', i + 2 ) )
+                c.replace( i, 1, "\\\"" );
+            ss << c;
+            
+            bool firstParam = true;
+            for ( const std::string& param : cmd.params )
+            {
+                if ( !firstParam )
+                    ss << ' ';
+                firstParam = false;
+                
+                std::string p = param.c_str();
+                
+                bool quoted = false;
+                if ( p.find( '"' ) != std::string::npos )
+                {
+                    quoted = true;
+                    for ( std::size_t i = p.find( '"' ); i != std::string::npos; i = p.find( '"', i + 2 ) )
+                        p.replace( i, 1, "\\\"" );
+                }
+                
+                if ( quoted ) ss << '"';
+                ss << p;
+                if ( quoted ) ss << '"';
+            }
+        }
+        ss << "\"";
+        return ss.str();
     }
 }
