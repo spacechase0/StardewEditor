@@ -375,12 +375,14 @@ void Ui::info()
     if ( ImGui::Begin( "Event Info" ) )
     {
         if ( active->id != -1 )
+        {
             ImGui::InputInt( "Event ID", &active->id );
+            ImGui::InputText( "Music", &active->music[ 0 ], 31 );
+            ImGui::InputInt2( "Viewport", &active->viewport.x );
+        }
         else
             ImGui::InputText( "Event Name", &active->branchName[ 0 ], 31 );
         
-        ImGui::InputText( "Music", &active->music[ 0 ], 31 );
-        ImGui::InputInt2( "Viewport", &active->viewport.x );
     }
     ImGui::End();
 }
@@ -520,6 +522,9 @@ void Ui::preconditions()
 
 void Ui::actors()
 {
+    if ( active->id == -1 )
+        return;
+    
     ImGui::SetNextWindowPos( ImVec2( 25, 375 ), ImGuiSetCond_Appearing );
     ImGui::SetNextWindowSize( ImVec2( 250, 200 ), ImGuiSetCond_Appearing );
     if ( ImGui::Begin( "Event Actors" ) )
