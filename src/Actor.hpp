@@ -1,6 +1,7 @@
 #ifndef ACTOR_HPP
 #define ACTOR_HPP
 
+#include <memory>
 #include <string>
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Texture.hpp>
@@ -33,6 +34,17 @@ class Actor
         const std::string name;
         sf::Vector2i tilePos;
         int facing;
+        
+        struct FarmerData
+        {
+            sf::Sprite arms;
+            sf::Sprite legs;
+            sf::Texture shirtTex;
+            sf::Sprite shirt;
+            sf::Texture hairTex;
+            sf::Sprite hair;
+        };
+        std::unique_ptr< FarmerData > farmerData;
         
         sf::Texture tex;
         sf::Sprite spr;
