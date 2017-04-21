@@ -27,7 +27,7 @@ void Map::update()
 
 void Map::update( const sf::Event& event )
 {
-    if ( event.type == sf::Event::MouseButtonPressed && editor.ui.isMouseOutside() )
+    if ( event.type == sf::Event::EventType::MouseButtonPressed && editor.ui.isMouseOutside() )
     {
         if ( event.mouseButton.button == sf::Mouse::Left )
         {
@@ -40,7 +40,19 @@ void Map::update( const sf::Event& event )
             }
         }
     }
-    else if ( event.type == sf::Event::Resized )
+    else if ( event.type == sf::Event::EventType::MouseWheelScrolled && editor.ui.isMouseOutside() )
+    {
+        sf::Vector2f worldPos = editor.window.mapPixelToCoords( sf::Vector2i( event.mouseWheelScroll.x, event.mouseWheelScroll.y ), view );
+         
+        if ( event.mouseWheelScroll.delta < 0 )
+            view.zoom( 1.1 );
+        else
+            view.zoom( 0.9 );
+        
+        sf::Vector2f newWorldPos = editor.window.mapPixelToCoords( sf::Vector2i( event.mouseWheelScroll.x, event.mouseWheelScroll.y ), view );
+        view.move( worldPos - newWorldPos );
+    }
+    else if ( event.type == sf::Event::EventType::Resized )
     {
         sf::Vector2f oldCenter = view.getCenter();
         view = sf::View( sf::FloatRect( 0, 0, editor.window.getSize().x, editor.window.getSize().y ) );
