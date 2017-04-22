@@ -2,9 +2,9 @@ obj
 *.dll
 *.exe
 *.cfg
-src/StardewCutsceneEditor.depend
-src/StardewCutsceneEditor_build_log.html
-src/StardewCutsceneEditor.layout
+src/StardewEditor.depend
+src/StardewEditor_build_log.html
+src/StardewEditor.layout
 imgui.ini
 log.txt
 *.zip
