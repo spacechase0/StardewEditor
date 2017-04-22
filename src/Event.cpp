@@ -266,7 +266,7 @@ namespace Event
         }
         else
         {
-            ss << branchName;
+            ss << branchName.c_str();
         }
         ss << ": \"";
         if ( id != -1 )
