@@ -7,3 +7,4 @@ src/StardewCutsceneEditor_build_log.html
 src/StardewCutsceneEditor.layout
 imgui.ini
 log.txt
+*.zip
