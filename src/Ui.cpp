@@ -12,6 +12,7 @@
 #include "Editor.hpp"
 #include "Event.hpp"
 
+#include"spritetext.hpp"
 namespace
 {
     bool wasItemActive( int check = -1 )
@@ -60,6 +61,10 @@ void Ui::render( sf::RenderWindow& window )
         reloadSoundList();
         firstUpdate = false;
     }
+    
+    SpriteText text( "We don't have a school here\nbut I'm doing my best to give\nVincent and Jas a proper\neducation.", editor.dialogueFont );
+    text.setPosition( window.getSize().x / 2, window.getSize().y / 2 );
+    window.draw( text );
     
     ImGui::Render();
 }

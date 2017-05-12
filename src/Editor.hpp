@@ -8,6 +8,7 @@
 #include "Config.hpp"
 #include "Map.hpp"
 #include "Ui.hpp"
+#include "SpriteFont.hpp"
 
 namespace sf
 {
@@ -28,6 +29,8 @@ class Editor
         sf::RenderWindow window;
         Map map;
         Ui ui;
+        
+        SpriteFont dialogueFont; 
     
     private:
         const std::string EXEC_PATH;

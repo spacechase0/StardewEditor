@@ -1,5 +1,6 @@
 #include "SpriteFont.hpp"
 
+#include <algorithm>
 #include <boost/filesystem.hpp>
 #include <util/File.hpp>
 
@@ -83,9 +84,10 @@ bool SpriteFont::loadFromFile( const std::string& path )
         kerning.push_back( sf::Vector3i( util::fromString< int >( xs ), util::fromString< int >( ys ), util::fromString< int >( zs ) ) );
     }
     
-    defaultChar = contents[ contents.find( '"', defPos ) + 1 ];
+    char defaultChar = contents[ contents.find( '"', defPos ) + 1 ];
+    defaultCharIndex = std::find( characters.begin(), characters.end(), defaultChar ) - characters.begin();
     
-    /*
+    //*
     util::log( "\nglyphs: " );
     for ( auto x : glyphs ) util::log( "($,$,$,$) ", x.left, x.top, x.width, x.height );
     util::log( "\ncropping: " );
@@ -95,8 +97,42 @@ bool SpriteFont::loadFromFile( const std::string& path )
     util::log( "\nspacing: ($, $)", spacing.x, spacing.y );
     util::log( "\nkerning: " );
     for ( auto x : kerning ) util::log( "($,$,$) ", x.x, x.y, x.z );
-    util::log( "\ndefault char: $", defaultChar );
+    util::log( "\ndefault char: chars[$] = $", defaultCharIndex, defaultChar );
+    util::log("\ntotal: $ $ $ $\n", glyphs.size(), cropping.size(), characters.size(), kerning.size() );
     //*/
     
     return true;
+}
+
+const sf::Texture& SpriteFont::getTexture() const
+{
+    return tex;
+}
+
+sf::IntRect SpriteFont::getGlyph( char c ) const
+{
+    return glyphs[ getCharIndex( c ) ];
+}
+
+sf::IntRect SpriteFont::getCropping( char c ) const
+{
+    return cropping[ getCharIndex( c ) ];
+}
+
+sf::Vector2i SpriteFont::getSpacing() const
+{
+    return spacing;
+}
+
+sf::Vector3i SpriteFont::getKerning( char c ) const
+{
+    return kerning[ getCharIndex( c ) ];
+}
+
+std::size_t SpriteFont::getCharIndex( char c ) const
+{
+    auto it = std::find( characters.begin(), characters.end(), c );
+    if ( it == characters.end() )
+        return defaultCharIndex;
+    return it - characters.begin();
 }

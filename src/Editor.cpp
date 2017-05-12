@@ -19,6 +19,11 @@ Editor::Editor( int argc, char* argv[] )
     if ( fs::exists( configPath ) )
         config.loadFromFile( configPath.string() );
     else config.saveToFile( CONFIG_FILE );
+    
+    if ( !dialogueFont.loadFromFile( ( fs::path( config.getUnpackedContentFolder() ) / "Fonts" / "SpriteFont1" ).string() ) )
+    {
+        util::log( "Failed to load dialogue SpriteFont.\n" );
+    }
 }
 
 Editor::~Editor()
