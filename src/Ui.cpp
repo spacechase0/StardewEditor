@@ -11,8 +11,8 @@
 
 #include "Editor.hpp"
 #include "Event.hpp"
+#include "ui/SoundPlayer.hpp"
 
-#include"spritetext.hpp"
 namespace
 {
     bool wasItemActive( int check = -1 )
@@ -25,8 +25,7 @@ namespace
 }
 
 Ui::Ui( Editor& theEditor )
-:   editor( theEditor ),
-    player( theEditor, ( * this ) )
+:   editor( theEditor )
 {
 }
 
@@ -37,9 +36,13 @@ void Ui::update()
     mainMenu();
     toolbar();
     other();
-    player.update();
+    for ( auto& module : modules )
+    {
+        module->update();
+    }
     if ( active )
     {
+            
         info();
         preconditions();
         actors();
@@ -56,6 +59,7 @@ void Ui::render( sf::RenderWindow& window )
 {
     if ( firstUpdate )
     {
+        modules.push_back( std::unique_ptr< UiModule >( new SoundPlayer( editor, ( * this ) ) ) );
         initMapList();
         reloadPreconditionTypes();
         firstUpdate = false;
@@ -323,31 +327,6 @@ void Ui::mainMenu()
             
             ImGui::EndMenu();
         }
-        if ( ImGui::BeginMenu( "Sounds" ) )
-        {
-            if ( ImGui::BeginMenu( "Reload" ) )
-            {
-                bool refresh = false;
-                ImGui::MenuItem( "Sound list", nullptr, &refresh );
-                if ( refresh )
-                {
-                    editor.reloadSoundList();
-                    player.refreshList();
-                }
-                
-                ImGui::EndMenu();
-            }
-            
-            bool selected = player.isShowing();
-            ImGui::MenuItem( "Player", nullptr, &selected );
-            if ( selected != player.isShowing() )
-            {
-                if ( selected ) player.show();
-                else player.hide();
-            }
-            
-            ImGui::EndMenu();
-        }
         
         if ( ImGui::BeginMenu( "Other" ) )
         {
@@ -365,6 +344,8 @@ void Ui::mainMenu()
             
             ImGui::EndMenu();
         }
+        for ( auto& module : modules )
+            module->menu();
         
         ImGui::EndMainMenuBar();
     }

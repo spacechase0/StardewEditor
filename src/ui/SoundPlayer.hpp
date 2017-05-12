@@ -5,15 +5,18 @@
 #include <string>
 #include <vector>
 
+#include "ui/UiModule.hpp"
+
 class Editor;
 class Ui;
 
-class SoundPlayer
+class SoundPlayer : public UiModule
 {
     public:
         SoundPlayer( Editor& theEditor, Ui& theUi );
         
-        void update();
+        virtual void menu() override;
+        virtual void update() override;
         
         void refreshList();
         

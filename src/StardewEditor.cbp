@@ -79,7 +79,8 @@
 		<Unit filename="Global.hpp" />
 		<Unit filename="Map.cpp" />
 		<Unit filename="Map.hpp" />
-		<Unit filename="SpriteFont.hpp" />
+		<Unit filename="SpriteText.cpp" />
+		<Unit filename="SpriteText.hpp" />
 		<Unit filename="Ui.cpp" />
 		<Unit filename="Ui.hpp" />
 		<Unit filename="imconfig.h" />
@@ -87,6 +88,8 @@
 		<Unit filename="main.cpp" />
 		<Unit filename="ui/SoundPlayer.cpp" />
 		<Unit filename="ui/SoundPlayer.hpp" />
+		<Unit filename="ui/UiModule.cpp" />
+		<Unit filename="ui/UiModule.hpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />

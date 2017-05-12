@@ -7,7 +7,7 @@
 #include <string>
 
 #include "Event.hpp"
-#include "ui/SoundPlayer.hpp"
+#include "ui/UiModule.hpp"
 
 class Editor;
 
@@ -32,7 +32,9 @@ class Ui
         Editor& editor;
         sf::Clock delta;
         bool firstUpdate = true;
-
+        
+        std::vector< std::unique_ptr< UiModule > > modules;
+        
         bool showingConfig = false;
 
         std::set< std::string > maps;
@@ -48,8 +50,6 @@ class Ui
         std::vector< std::string > precTypeLabels;
         std::string precTypeLabelsStr;
         std::map< char, std::string > enumValuesStr;
-        
-        SoundPlayer player;
         
         void initMapList();
         void loadEventList( const std::string& map );

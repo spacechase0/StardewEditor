@@ -10,6 +10,36 @@ SoundPlayer::SoundPlayer( Editor& theEditor, Ui& theUi )
 :   editor( theEditor ),
     ui( theUi )
 {
+    refreshList();
+}
+
+void SoundPlayer::menu()
+{
+    if ( ImGui::BeginMenu( "Sounds" ) )
+    {
+        if ( ImGui::BeginMenu( "Reload" ) )
+        {
+            bool refresh = false;
+            ImGui::MenuItem( "Sound list", nullptr, &refresh );
+            if ( refresh )
+            {
+                editor.reloadSoundList();
+                refreshList();
+            }
+            
+            ImGui::EndMenu();
+        }
+        
+        bool selected = isShowing();
+        ImGui::MenuItem( "Player", nullptr, &selected );
+        if ( selected != isShowing() )
+        {
+            if ( selected ) show();
+            else hide();
+        }
+        
+        ImGui::EndMenu();
+    }
 }
 
 void SoundPlayer::update()
