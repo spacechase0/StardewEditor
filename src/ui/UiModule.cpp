@@ -3,3 +3,7 @@
 UiModule::~UiModule()
 {
 }
+
+void UiModule::mapChanged()
+{
+}

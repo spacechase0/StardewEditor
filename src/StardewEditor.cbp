@@ -86,6 +86,8 @@
 		<Unit filename="imconfig.h" />
 		<Unit filename="imgui_.cpp" />
 		<Unit filename="main.cpp" />
+		<Unit filename="ui/EventEditor.cpp" />
+		<Unit filename="ui/EventEditor.hpp" />
 		<Unit filename="ui/SoundPlayer.cpp" />
 		<Unit filename="ui/SoundPlayer.hpp" />
 		<Unit filename="ui/UiModule.cpp" />

@@ -67,22 +67,6 @@ void Editor::run()
     ImGui::SFML::Shutdown();
 }
 
-std::vector< std::string > Editor::getSoundCueList() const
-{
-    std::vector< std::string > ret;
-    for ( const auto& entry : sounds )
-    {
-        ret.push_back( entry.first );
-    }
-    return ret;
-}
-
-std::string Editor::getPathForSound( const std::string& cue ) const
-{
-    std::string snd = sounds.at( cue )[ rand() % sounds.at( cue ).size() ];
-    return ( fs::path( config.getExtractedSounds() ) / ( snd + ".wav" ) ).string();
-}
-
 void Editor::reloadSoundList()
 {
     std::ifstream file( ( fs::path( config.getDataFolder() ) / "soundCues.txt" ).string() );
@@ -105,4 +89,20 @@ void Editor::reloadSoundList()
         
         sounds.insert( std::make_pair( cue, inds ) );
     }
+}
+
+std::vector< std::string > Editor::getSoundCueList() const
+{
+    std::vector< std::string > ret;
+    for ( const auto& entry : sounds )
+    {
+        ret.push_back( entry.first );
+    }
+    return ret;
+}
+
+std::string Editor::getPathForSound( const std::string& cue ) const
+{
+    std::string snd = sounds.at( cue )[ rand() % sounds.at( cue ).size() ];
+    return ( fs::path( config.getExtractedSounds() ) / ( snd + ".wav" ) ).string();
 }
