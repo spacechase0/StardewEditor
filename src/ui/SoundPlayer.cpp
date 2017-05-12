@@ -4,7 +4,7 @@
 #include <imgui.h>
 #include <SFML/System/Sleep.hpp>
 
-#include "Ui.hpp"
+#include "Editor.hpp"
 
 SoundPlayer::SoundPlayer( Editor& theEditor, Ui& theUi )
 :   editor( theEditor ),
@@ -52,7 +52,7 @@ void SoundPlayer::update()
                     playing.play();
                 else
                 {
-                    std::string path = ui.getPathForSound( current );
+                    std::string path = editor.getPathForSound( current );
                     if ( !playing.openFromFile( path ) )
                         util::log( "[WARN] Failed to open '$' as sf::Music.\n", path );
                     else playing.play();
@@ -65,7 +65,7 @@ void SoundPlayer::update()
 
 void SoundPlayer::refreshList()
 {
-    choices = ui.getSoundCueList();
+    choices = editor.getSoundCueList();
     if ( std::find( choices.begin(), choices.end(), current ) == choices.end() )
     {
         current = "";

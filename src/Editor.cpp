@@ -24,6 +24,8 @@ Editor::Editor( int argc, char* argv[] )
     {
         util::log( "Failed to load dialogue font.\n" );
     }
+    
+    reloadSoundList();
 }
 
 Editor::~Editor()
@@ -63,4 +65,44 @@ void Editor::run()
     }
     
     ImGui::SFML::Shutdown();
+}
+
+std::vector< std::string > Editor::getSoundCueList() const
+{
+    std::vector< std::string > ret;
+    for ( const auto& entry : sounds )
+    {
+        ret.push_back( entry.first );
+    }
+    return ret;
+}
+
+std::string Editor::getPathForSound( const std::string& cue ) const
+{
+    std::string snd = sounds.at( cue )[ rand() % sounds.at( cue ).size() ];
+    return ( fs::path( config.getExtractedSounds() ) / ( snd + ".wav" ) ).string();
+}
+
+void Editor::reloadSoundList()
+{
+    std::ifstream file( ( fs::path( config.getDataFolder() ) / "soundCues.txt" ).string() );
+    if ( !file )
+        return;
+    
+    sounds.clear();
+    while ( true )
+    {
+        std::string line;
+        std::getline( file, line );
+        if ( !file )
+            break;
+        
+        std::size_t eq = line.find( '=' );
+        if ( eq == std::string::npos ) continue;
+        
+        std::string cue = line.substr( 0, eq );
+        std::vector< std::string > inds = util::tokenize( line.substr( eq + 1 ), "," );
+        
+        sounds.insert( std::make_pair( cue, inds ) );
+    }
 }

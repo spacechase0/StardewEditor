@@ -27,9 +27,6 @@ class Ui
         void render( sf::RenderWindow& window );
         
         bool isMouseOutside() const;
-        
-        std::vector< std::string > getSoundCueList() const;
-        std::string getPathForSound( const std::string& cue ) const;
     
     private:
         Editor& editor;
@@ -53,12 +50,10 @@ class Ui
         std::map< char, std::string > enumValuesStr;
         
         SoundPlayer player;
-        std::map< std::string, std::vector< std::string > > sounds;
         
         void initMapList();
         void loadEventList( const std::string& map );
         void reloadPreconditionTypes();
-        void reloadSoundList();
         
         void mainMenu();
         void toolbar();

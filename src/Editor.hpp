@@ -30,10 +30,16 @@ class Editor
         Map map;
         Ui ui;
         
-        sf::Texture dialogueFont; 
+        sf::Texture dialogueFont;
+        
+        void reloadSoundList();
+        std::vector< std::string > getSoundCueList() const;
+        std::string getPathForSound( const std::string& cue ) const;
     
     private:
         const std::string EXEC_PATH;
+        
+        std::map< std::string, std::vector< std::string > > sounds;
 };
 
 #endif // EDITOR_HPP

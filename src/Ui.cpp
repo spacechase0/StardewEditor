@@ -58,15 +58,8 @@ void Ui::render( sf::RenderWindow& window )
     {
         initMapList();
         reloadPreconditionTypes();
-        reloadSoundList();
         firstUpdate = false;
     }
-    
-    SpriteText text( "We don't have a school here\nbut I'm doing my best to give\nVincent and Jas a proper\neducation.", editor.dialogueFont );
-    text.setPosition( window.getSize().x / 2, window.getSize().y / 2 );
-    text.setScale( 3 * 0.75, 3 * 0.75 );
-    text.setOrigin( text.getLocalBounds().width / 2, text.getLocalBounds().height / 2 );
-    window.draw( text );
     
     ImGui::Render();
 }
@@ -74,22 +67,6 @@ void Ui::render( sf::RenderWindow& window )
 bool Ui::isMouseOutside() const
 {
     return !ImGui::IsMouseHoveringAnyWindow();
-}
-
-std::vector< std::string > Ui::getSoundCueList() const
-{
-    std::vector< std::string > ret;
-    for ( const auto& entry : sounds )
-    {
-        ret.push_back( entry.first );
-    }
-    return ret;
-}
-
-std::string Ui::getPathForSound( const std::string& cue ) const
-{
-    std::string snd = sounds.at( cue )[ rand() % sounds.at( cue ).size() ];
-    return ( fs::path( editor.config.getExtractedSounds() ) / ( snd + ".wav" ) ).string();
 }
 
 void Ui::initMapList()
@@ -188,32 +165,6 @@ void Ui::reloadPreconditionTypes()
         precTypeLabelsStr += label + '\0';
     }
     precTypeLabelsStr += '\0';
-}
-
-void Ui::reloadSoundList()
-{
-    std::ifstream file( ( fs::path( editor.config.getDataFolder() ) / "soundCues.txt" ).string() );
-    if ( !file )
-        return;
-    
-    sounds.clear();
-    while ( true )
-    {
-        std::string line;
-        std::getline( file, line );
-        if ( !file )
-            break;
-        
-        std::size_t eq = line.find( '=' );
-        if ( eq == std::string::npos ) continue;
-        
-        std::string cue = line.substr( 0, eq );
-        std::vector< std::string > inds = util::tokenize( line.substr( eq + 1 ), "," );
-        
-        sounds.insert( std::make_pair( cue, inds ) );
-    }
-    
-    player.refreshList();
 }
 
 void Ui::mainMenu()
@@ -380,7 +331,8 @@ void Ui::mainMenu()
                 ImGui::MenuItem( "Sound list", nullptr, &refresh );
                 if ( refresh )
                 {
-                    reloadSoundList();
+                    editor.reloadSoundList();
+                    player.refreshList();
                 }
                 
                 ImGui::EndMenu();
