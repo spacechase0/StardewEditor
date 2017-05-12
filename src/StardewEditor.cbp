@@ -74,8 +74,6 @@
 		<Unit filename="Config.hpp" />
 		<Unit filename="Editor.cpp" />
 		<Unit filename="Editor.hpp" />
-		<Unit filename="Event.cpp" />
-		<Unit filename="Event.hpp" />
 		<Unit filename="Global.hpp" />
 		<Unit filename="Map.cpp" />
 		<Unit filename="Map.hpp" />
@@ -84,11 +82,15 @@
 		<Unit filename="SpriteText.hpp" />
 		<Unit filename="Ui.cpp" />
 		<Unit filename="Ui.hpp" />
+		<Unit filename="game/Event.cpp" />
+		<Unit filename="game/Event.hpp" />
 		<Unit filename="imconfig.h" />
 		<Unit filename="imgui_.cpp" />
 		<Unit filename="main.cpp" />
 		<Unit filename="ui/EventEditor.cpp" />
 		<Unit filename="ui/EventEditor.hpp" />
+		<Unit filename="ui/MapDisplay.cpp" />
+		<Unit filename="ui/MapDisplay.hpp" />
 		<Unit filename="ui/SoundPlayer.cpp" />
 		<Unit filename="ui/SoundPlayer.hpp" />
 		<Unit filename="ui/UiModule.cpp" />
