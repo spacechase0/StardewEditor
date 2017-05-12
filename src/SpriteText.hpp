@@ -11,21 +11,20 @@
 namespace sf
 {
     class RenderTarget;
+    class Texture;
 }
-
-class SpriteFont;
 
 class SpriteText : public sf::Drawable, public sf::Transformable
 {
     public:
         SpriteText();
-        SpriteText( const sf::String& str, const SpriteFont& font );
+        SpriteText( const sf::String& str, const sf::Texture& font );
         
         void setString( const sf::String& str );
-        void setFont( const SpriteFont& font );
+        void setFont( const sf::Texture& font );
         void setColor( const sf::Color& color );
         const sf::String& getString() const;
-        const SpriteFont* getFont() const;
+        const sf::Texture* getFont() const;
         const sf::Color& getColor() const;
         
         sf::FloatRect getLocalBounds() const;
@@ -35,8 +34,8 @@ class SpriteText : public sf::Drawable, public sf::Transformable
     
     private:
         sf::String str = "";
-        const SpriteFont* font = nullptr;
-        sf::Color color = sf::Color( 34, 17, 34 );
+        const sf::Texture* font = nullptr;
+        sf::Color color = sf::Color::White;
         
         mutable bool dirty = true;
         mutable std::vector< sf::Vertex > vertices;

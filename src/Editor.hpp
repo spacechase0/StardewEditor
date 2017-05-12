@@ -3,12 +3,12 @@
 
 #include <set>
 #include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Graphics/Texture.hpp>
 #include <string>
 
 #include "Config.hpp"
 #include "Map.hpp"
 #include "Ui.hpp"
-#include "SpriteFont.hpp"
 
 namespace sf
 {
@@ -30,7 +30,7 @@ class Editor
         Map map;
         Ui ui;
         
-        SpriteFont dialogueFont; 
+        sf::Texture dialogueFont; 
     
     private:
         const std::string EXEC_PATH;

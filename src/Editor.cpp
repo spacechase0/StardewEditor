@@ -5,7 +5,7 @@
 #include <imgui-sfml.h>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Window/Event.hpp>
-#include"spritefont.hpp"
+
 namespace fs = boost::filesystem;
 
 const char* Editor::CONFIG_FILE = "editor.cfg";
@@ -20,9 +20,9 @@ Editor::Editor( int argc, char* argv[] )
         config.loadFromFile( configPath.string() );
     else config.saveToFile( CONFIG_FILE );
     
-    if ( !dialogueFont.loadFromFile( ( fs::path( config.getUnpackedContentFolder() ) / "Fonts" / "SpriteFont1" ).string() ) )
+    if ( !dialogueFont.loadFromFile( ( fs::path( config.getUnpackedContentFolder() ) / "LooseSprites" / "font_bold.png" ).string() ) )
     {
-        util::log( "Failed to load dialogue SpriteFont.\n" );
+        util::log( "Failed to load dialogue font.\n" );
     }
 }
 

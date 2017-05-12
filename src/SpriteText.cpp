@@ -1,14 +1,76 @@
 #include "SpriteText.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Graphics/Texture.hpp>
 
-#include "SpriteFont.hpp"
+namespace 
+{
+    int getWidthOffsetForChar(char c)
+    {
+      if ((int) c <= 46U)
+      {
+        if ((int) c <= 36U)
+        {
+          if ((int) c != 33)
+          {
+            if ((int) c == 36)
+              return 1;
+            goto label_13;
+          }
+        }
+        else
+        {
+          if ((int) c == 44 || (int) c == 46)
+            return -2;
+          goto label_13;
+        }
+      }
+      else
+      {
+        if ((int) c <= 108U)
+        {
+          switch (c)
+          {
+            case '^':
+              return -8;
+            case 'i':
+              break;
+            case 'j':
+            case 'l':
+              goto label_9;
+            default:
+              goto label_13;
+          }
+        }
+        else
+        {
+          switch (c)
+          {
+            case '¡':
+              goto label_9;
+            case 'ì':
+            case 'í':
+            case 'î':
+            case 'ï':
+              break;
+            default:
+              goto label_13;
+          }
+        }
+        return -1;
+      }
+label_9:
+      return -1;
+label_13:
+      return 0;
+    }
+}
 
 SpriteText::SpriteText()
 {
 }
 
-SpriteText::SpriteText( const sf::String& theStr, const SpriteFont& theFont )
+SpriteText::SpriteText( const sf::String& theStr, const sf::Texture& theFont )
 :   str( theStr ),
     font( &theFont )
 {
@@ -20,7 +82,7 @@ void SpriteText::setString( const sf::String& theStr )
     dirty = true;
 }
 
-void SpriteText::setFont( const SpriteFont& theFont )
+void SpriteText::setFont( const sf::Texture& theFont )
 {
     font = &theFont;
     dirty = true;
@@ -37,7 +99,7 @@ const sf::String& SpriteText::getString() const
     return str;
 }
 
-const SpriteFont* SpriteText::getFont() const
+const sf::Texture* SpriteText::getFont() const
 {
     return font;
 }
@@ -49,6 +111,7 @@ const sf::Color& SpriteText::getColor() const
 
 sf::FloatRect SpriteText::getLocalBounds() const
 {
+    build();
     return bounds;
 }
 
@@ -63,7 +126,7 @@ void SpriteText::draw( sf::RenderTarget& target, sf::RenderStates states ) const
         build();
     
     states.transform *= getTransform();
-    states.texture = &font->getTexture();
+    states.texture = font;
     target.draw( &vertices[ 0 ], vertices.size(), sf::PrimitiveType::Quads, states );
 }
 
@@ -75,43 +138,51 @@ void SpriteText::build() const
     vertices.clear();
     bounds = sf::FloatRect( 0, 0, 0, 0);
     
-    sf::Vector2i spacing = font->getSpacing();
-    
-    sf::Vector2f pos = -getOrigin();
+    sf::Vector2f pos( 0, 0 );
     bounds.left = pos.x;
     bounds.top = pos.y;
     
-    for ( auto c : str.toAnsiString() )
+    std::string str = this->str.toAnsiString();
+    for ( std::size_t i = 0; i < str.length(); ++i )
     {
+        char c = str[ i ];
         if ( c == '\r' )
             continue;
         
-        if ( c == '\n' )
+        std::size_t space = str.find( ' ', i + 1 );
+        
+        if ( c == '\n' || c == '^' )
         {
             bounds.width = std::max( bounds.width, pos.x );
             pos.x = 0;
-            pos.y += spacing.y;
+            pos.y += 18;
         }
         else
         {
-            sf::IntRect glyph = font->getGlyph( c );
-            sf::IntRect crop = font->getCropping( c );
-            sf::Vector3i kern = font->getKerning( c );
+            if ( space != std::string::npos && ( space - i ) * 10 >= 99999 )
+            {
+                bounds.width = std::max( bounds.width, pos.x );
+                pos.x = 0;
+                pos.y += 18;
+            }
             
-            sf::Vector2f offset( kern.x, kern.y );
-            offset.x += spacing.x;
-            offset.x += crop.left;
-            offset.y += crop.top;
+            int num = c - 32;
+            sf::IntRect glyph( num * 8 % font->getSize().x, num * 8 / font->getSize().x * 16, 8, 16 );
             
-            vertices.push_back( sf::Vertex( pos + offset + sf::Vector2f( 0         , 0           ), color, sf::Vector2f( glyph.left              , glyph.top                ) ) );
-            vertices.push_back( sf::Vertex( pos + offset + sf::Vector2f( crop.width, 0           ), color, sf::Vector2f( glyph.left + glyph.width, glyph.top                ) ) );
-            vertices.push_back( sf::Vertex( pos + offset + sf::Vector2f( crop.width, crop.height ), color, sf::Vector2f( glyph.left + glyph.width, glyph.top + glyph.height ) ) );
-            vertices.push_back( sf::Vertex( pos + offset + sf::Vector2f( 0         , crop.height ), color, sf::Vector2f( glyph.left              , glyph.top + glyph.height ) ) );
+            sf::Vector2f offset( 0, -1 );
+            if ( std::isupper( c ) )
+                offset.y -= 3;
             
-            pos.x += kern.y + kern.z;
+            vertices.push_back( sf::Vertex( pos + offset + sf::Vector2f( 0          , 0            ), color, sf::Vector2f( glyph.left              , glyph.top                ) ) );
+            vertices.push_back( sf::Vertex( pos + offset + sf::Vector2f( glyph.width, 0            ), color, sf::Vector2f( glyph.left + glyph.width, glyph.top                ) ) );
+            vertices.push_back( sf::Vertex( pos + offset + sf::Vector2f( glyph.width, glyph.height ), color, sf::Vector2f( glyph.left + glyph.width, glyph.top + glyph.height ) ) );
+            vertices.push_back( sf::Vertex( pos + offset + sf::Vector2f( 0          , glyph.height ), color, sf::Vector2f( glyph.left              , glyph.top + glyph.height ) ) );
+            
+            pos.x += glyph.width + getWidthOffsetForChar( c );
         }
     }
     
+    bounds.width = std::max( bounds.width, pos.x );
     bounds.height = pos.y;
     
     dirty = false;

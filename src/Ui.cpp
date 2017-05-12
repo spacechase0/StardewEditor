@@ -64,6 +64,8 @@ void Ui::render( sf::RenderWindow& window )
     
     SpriteText text( "We don't have a school here\nbut I'm doing my best to give\nVincent and Jas a proper\neducation.", editor.dialogueFont );
     text.setPosition( window.getSize().x / 2, window.getSize().y / 2 );
+    text.setScale( 3 * 0.75, 3 * 0.75 );
+    text.setOrigin( text.getLocalBounds().width / 2, text.getLocalBounds().height / 2 );
     window.draw( text );
     
     ImGui::Render();
