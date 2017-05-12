@@ -32,6 +32,9 @@ class Editor
         
         sf::Texture dialogueFont;
         
+        void refreshMapList();
+        std::set< std::string > maps;
+        
         void reloadSoundList();
         std::vector< std::string > getSoundCueList() const;
         std::string getPathForSound( const std::string& cue ) const;

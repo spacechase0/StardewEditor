@@ -25,6 +25,7 @@ Editor::Editor( int argc, char* argv[] )
         util::log( "Failed to load dialogue font.\n" );
     }
     
+    refreshMapList();
     reloadSoundList();
 }
 
@@ -67,6 +68,24 @@ void Editor::run()
     ImGui::SFML::Shutdown();
 }
 
+void Editor::refreshMapList()
+{
+    if ( !fs::exists( fs::path( config.getDataFolder() ) / "maps" ) ||
+         !fs::exists( fs::path( config.getUnpackedContentFolder() ) / "Data" / "Events" ) )
+        return;
+    
+    maps.clear();
+    for ( fs::directory_iterator it( fs::path( config.getDataFolder() ) / "maps" );
+          it != fs::directory_iterator(); ++it )
+    {
+        fs::path file = ( * it );
+        if ( file.extension() == ".png" )
+            maps.insert( file.stem().string() );
+    }
+    
+    ui.sendRefresh( Refresh::MapList );
+}
+
 void Editor::reloadSoundList()
 {
     std::ifstream file( ( fs::path( config.getDataFolder() ) / "soundCues.txt" ).string() );
@@ -89,6 +108,8 @@ void Editor::reloadSoundList()
         
         sounds.insert( std::make_pair( cue, inds ) );
     }
+    
+    ui.sendRefresh( Refresh::Sounds );
 }
 
 std::vector< std::string > Editor::getSoundCueList() const

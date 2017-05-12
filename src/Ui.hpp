@@ -17,6 +17,7 @@ namespace sf
 }
 
 class EventEditor;
+class MapDisplay;
 class SoundPlayer;
 
 class Ui
@@ -35,9 +36,8 @@ class Ui
         void sendRefresh( Refresh::Type type );
         
         EventEditor* eventEditor;
+        MapDisplay* mapDisplay;
         SoundPlayer* soundPlayer;
-        
-        std::set< std::string > maps;
     
     private:
         Editor& editor;
@@ -51,10 +51,7 @@ class Ui
         std::string exported;
         bool exportedMulti = false;
         
-        void initMapList();
-        
         void mainMenu();
-        void toolbar();
         void other();
 };
 

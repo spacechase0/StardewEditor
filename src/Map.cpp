@@ -15,7 +15,6 @@ Map::Map( Editor& theEditor )
         int ix = i % TILE_SIZE;
         int iy = i / TILE_SIZE;
         
-        sf::Color col = sf::Color( 0, 0, 0, 0 );
         if ( ix == 0 || iy == 0 || ix == TILE_SIZE - 1 || iy == TILE_SIZE - 1 )
         {
             gridImage.setPixel( ix, iy, sf::Color( 0, 0, 0, 64 ) );
@@ -114,6 +113,7 @@ void Map::changeCurrentMap( const std::string& map )
     current = map;
     spr.setTexture( tex, true );
     spr.setPosition( 0, 0 );
+    actors.clear();
 }
 
 std::string Map::getCurrentMap() const
