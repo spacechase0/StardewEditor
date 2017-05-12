@@ -5,7 +5,7 @@
 #include <imgui-sfml.h>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Window/Event.hpp>
-
+#include"spritefont.hpp"
 namespace fs = boost::filesystem;
 
 const char* Editor::CONFIG_FILE = "editor.cfg";
@@ -19,8 +19,6 @@ Editor::Editor( int argc, char* argv[] )
     if ( fs::exists( configPath ) )
         config.loadFromFile( configPath.string() );
     else config.saveToFile( CONFIG_FILE );
-    
-    util::Logger::setName( "Main log", "log.txt" );
 }
 
 Editor::~Editor()
