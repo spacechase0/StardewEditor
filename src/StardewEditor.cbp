@@ -79,6 +79,7 @@
 		<Unit filename="Global.hpp" />
 		<Unit filename="Map.cpp" />
 		<Unit filename="Map.hpp" />
+		<Unit filename="RefreshType.hpp" />
 		<Unit filename="SpriteText.cpp" />
 		<Unit filename="SpriteText.hpp" />
 		<Unit filename="Ui.cpp" />

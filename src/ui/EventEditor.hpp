@@ -20,7 +20,7 @@ class EventEditor : public UiModule
         virtual void menu() override;
         virtual void update() override;
         
-        virtual void mapChanged() override;
+        virtual void refresh( Refresh::Type type ) override;
         
     private:
         Editor& editor;

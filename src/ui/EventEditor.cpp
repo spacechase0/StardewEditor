@@ -174,9 +174,10 @@ void EventEditor::update()
     commands();
 }
 
-void EventEditor::mapChanged()
+void EventEditor::refresh( Refresh::Type type )
 {
-    loadEventList( editor.map.getCurrentMap() );
+    if ( type == Refresh::Map )
+        loadEventList( editor.map.getCurrentMap() );
 }
 
 void EventEditor::info()

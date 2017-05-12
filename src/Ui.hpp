@@ -32,6 +32,8 @@ class Ui
         
         void showExport( const std::string& str, bool multi = true );
         
+        void sendRefresh( Refresh::Type type );
+        
         EventEditor* eventEditor;
         SoundPlayer* soundPlayer;
         

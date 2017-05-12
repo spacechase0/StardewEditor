@@ -1,6 +1,8 @@
 #ifndef UIMODULE_HPP
 #define UIMODULE_HPP
 
+#include "RefreshType.hpp"
+
 class UiModule
 {
     public:
@@ -9,7 +11,7 @@ class UiModule
         virtual void menu() = 0;
         virtual void update() = 0;
         
-        virtual void mapChanged();
+        virtual void refresh( Refresh::Type type );
 };
 
 #endif // UIMODULE_HPP

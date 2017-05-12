@@ -4,6 +4,6 @@ UiModule::~UiModule()
 {
 }
 
-void UiModule::mapChanged()
+void UiModule::refresh( Refresh::Type type )
 {
 }

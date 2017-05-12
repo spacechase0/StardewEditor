@@ -24,7 +24,6 @@ void SoundPlayer::menu()
             if ( refresh )
             {
                 editor.reloadSoundList();
-                refreshList();
             }
             
             ImGui::EndMenu();
@@ -93,21 +92,10 @@ void SoundPlayer::update()
     ImGui::End();
 }
 
-void SoundPlayer::refreshList()
+void SoundPlayer::refresh( Refresh::Type type )
 {
-    choices = editor.getSoundCueList();
-    if ( std::find( choices.begin(), choices.end(), current ) == choices.end() )
-    {
-        current = "";
-        playing.stop();
-    }
-    
-    choicesStr = "";
-    for ( const std::string& choice : choices )
-    {
-        choicesStr += choice + '\0';
-    }
-    choicesStr += '\0';
+    if ( type == Refresh::Sounds )
+        refreshList();
 }
 
 bool SoundPlayer::isShowing() const
@@ -138,4 +126,21 @@ sf::Time SoundPlayer::getCurrentProgress() const
 sf::Time SoundPlayer::getCurrentDuration() const
 {
     return playing.getDuration();
+}
+
+void SoundPlayer::refreshList()
+{
+    choices = editor.getSoundCueList();
+    if ( std::find( choices.begin(), choices.end(), current ) == choices.end() )
+    {
+        current = "";
+        playing.stop();
+    }
+    
+    choicesStr = "";
+    for ( const std::string& choice : choices )
+    {
+        choicesStr += choice + '\0';
+    }
+    choicesStr += '\0';
 }

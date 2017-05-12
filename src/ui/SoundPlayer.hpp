@@ -18,7 +18,7 @@ class SoundPlayer : public UiModule
         virtual void menu() override;
         virtual void update() override;
         
-        void refreshList();
+        virtual void refresh( Refresh::Type type );
         
         bool isShowing() const;
         void show();
@@ -39,6 +39,8 @@ class SoundPlayer : public UiModule
         
         std::string current;
         sf::Music playing;
+        
+        void refreshList();
 };
 
 #endif // UI_SOUNDPLAYER_HPP

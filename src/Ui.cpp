@@ -39,9 +39,10 @@ void Ui::render( sf::RenderWindow& window )
 {
     if ( firstUpdate )
     {
+        initMapList();
+        
         modules.push_back( std::unique_ptr< UiModule >( eventEditor = new EventEditor( editor, ( * this ) ) ) );
         modules.push_back( std::unique_ptr< UiModule >( soundPlayer = new SoundPlayer( editor, ( * this ) ) ) );
-        initMapList();
         firstUpdate = false;
     }
     
@@ -59,6 +60,12 @@ void Ui::showExport( const std::string& str, bool multi )
     exportedMulti = multi;
 }
 
+void Ui::sendRefresh( Refresh::Type type )
+{
+    for ( auto& module : modules )
+        module->refresh( type );
+}
+
 void Ui::initMapList()
 {
     if ( !fs::exists( fs::path( editor.config.getDataFolder() ) / "maps" ) ||
@@ -73,6 +80,8 @@ void Ui::initMapList()
         if ( file.extension() == ".png" )
             maps.insert( file.stem().string() );
     }
+    
+    sendRefresh( Refresh::MapList );
 }
 
 void Ui::mainMenu()
@@ -101,8 +110,7 @@ void Ui::mainMenu()
                 if ( selected && editor.map.getCurrentMap() != map )
                 {
                     editor.map.changeCurrentMap( map );
-                    for ( auto& module : modules )
-                        module->mapChanged();
+                    sendRefresh( Refresh::Map );
                 }
             }
             
