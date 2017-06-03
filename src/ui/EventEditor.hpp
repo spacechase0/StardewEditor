@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 
-#include "Event.hpp"
+#include "game/Event.hpp"
 #include "ui/UiModule.hpp"
 
 class Editor;
