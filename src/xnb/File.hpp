@@ -2,7 +2,10 @@
 #define XNB_FILE_HPP
 
 #include <iostream>
+#include <memory>
 #include <string>
+
+#include "xnb/Data.hpp"
 
 namespace xnb
 {
@@ -11,6 +14,8 @@ namespace xnb
         public:
             bool loadFromFile( const std::string& path );
             bool loadFromStream( std::istream& in );
+            
+            std::unique_ptr< xnb::Data > data;
         
         private:
             bool readData( std::istream& in );
