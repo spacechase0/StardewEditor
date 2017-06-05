@@ -9,18 +9,28 @@
 namespace xnb
 {
     class Data;
+    class File;
+    
+    struct TypeReaderHeader
+    {
+        std::string name;
+        sf::Int32 version;
+    };
     
     class ITypeReader
     {
         public:
             virtual ~ITypeReader();
             
-            virtual std::unique_ptr< Data >&& read( std::istream& in, const std::string& fullDecl ) = 0;
+            virtual std::unique_ptr< Data > read( const File& file, std::istream& in, const std::string& fullDecl ) = 0;
             
             /// Can specify the type reader class or the resulting class (not including generic parameters)
-            static ITypeReader* getTypeReader( const std::string& str );
+            static ITypeReader* getTypeReader( std::string str );
+            
+            virtual bool resultIsValueType() const = 0;
         
-        private:
+        protected:
+            static std::string getTypeReaderNameAtIndex( const File& file, int index );
     };
 }
 

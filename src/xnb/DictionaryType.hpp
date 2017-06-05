@@ -26,7 +26,9 @@ namespace xnb
     class DictionaryTypeReader : public ITypeReader
     {
         public:
-            virtual std::unique_ptr< Data >&& read( std::istream& in, const std::string& fullDecl ) override;
+            virtual std::unique_ptr< Data > read( const File& file, std::istream& in, const std::string& fullDecl ) override;
+            
+            virtual bool resultIsValueType() const override;
     };
     
     constexpr const char* DICTIONARY_TYPE = "System.Collections.Generic.Dictionary"; // TODO: Better

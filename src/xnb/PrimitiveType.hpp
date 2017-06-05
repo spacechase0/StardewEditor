@@ -10,7 +10,7 @@ namespace xnb
     class PrimitiveData : public Data
     {
         public:
-            T value;
+            T value = 0;
             
             virtual std::string toString() const override;
     };
@@ -19,7 +19,9 @@ namespace xnb
     class PrimitiveTypeReader : public ITypeReader
     {
         public:
-            virtual std::unique_ptr< Data >&& read( std::istream& in, const std::string& fullDecl ) override;
+            virtual std::unique_ptr< Data > read( const File& file, std::istream& in, const std::string& fullDecl ) override;
+            
+            virtual bool resultIsValueType() const override;
     };
     
     constexpr const char* PRIMITIVE_INT8_TYPE = "System.SByte";

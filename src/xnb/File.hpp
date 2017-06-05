@@ -6,6 +6,7 @@
 #include <string>
 
 #include "xnb/Data.hpp"
+#include "xnb/ITypeReader.hpp"
 
 namespace xnb
 {
@@ -19,6 +20,9 @@ namespace xnb
         
         private:
             bool readData( std::istream& in );
+            
+            friend class ITypeReader;
+            std::vector< TypeReaderHeader > typeReaders;
     };
 }
 

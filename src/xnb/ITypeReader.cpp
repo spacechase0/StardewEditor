@@ -2,9 +2,17 @@
 
 #include <SFML/Config.hpp>
 
+#include "xnb/ArrayType.hpp"
 #include "xnb/DictionaryType.hpp"
+#include "xnb/File.hpp"
+#include "xnb/ListType.hpp"
 #include "xnb/PrimitiveType.hpp"
+#include "xnb/SpriteFontType.hpp"
 #include "xnb/StringType.hpp"
+#include "xnb/TbinType.hpp"
+#include "xnb/TextureType.hpp"
+
+#include"IOSTREAM"
 
 namespace xnb
 {
@@ -12,12 +20,22 @@ namespace xnb
     {
     }
     
-    ITypeReader* ITypeReader::getTypeReader( const std::string& str )
+    ITypeReader* ITypeReader::getTypeReader( std::string str )
     {
+        std::size_t genericMarker = str.find( '`' );
+        if ( genericMarker != std::string::npos )
+            str = str.substr( 0, genericMarker );
+        
+        std::size_t infoSep = str.find( ',' );
+        if ( infoSep != std::string::npos )
+            str = str.substr( 0, infoSep );
+        
+        static std::unique_ptr< ITypeReader > arrays;
         static std::map< std::string, std::unique_ptr< ITypeReader > > types;
         static std::map< std::string, std::unique_ptr< ITypeReader > > typeReaders;
         if ( types.size() == 0 )
         {
+            arrays.reset( new ArrayTypeReader() );
             #define ADD_TYPEREADER(str,r) types.emplace( std::make_pair( str, std::unique_ptr< ITypeReader >() ) ); \
                                           types[ str ].reset( r ); \
                                           typeReaders.emplace( std::make_pair( str ## READER, std::unique_ptr< ITypeReader >() ) ); \
@@ -36,8 +54,17 @@ namespace xnb
             ADD_TYPEREADER( PRIMITIVE_BOOL_TYPE, new PrimitiveTypeReader< bool >() );
             ADD_TYPEREADER( DICTIONARY_TYPE, new DictionaryTypeReader() );
             ADD_TYPEREADER( STRING_TYPE, new StringTypeReader() );
+            ADD_TYPEREADER( TEXTURE2D_TYPE, new Texture2DTypeReader() );
+            ADD_TYPEREADER( TBIN_TYPE, new TbinTypeReader() );
+            ADD_TYPEREADER( LIST_TYPE, new ListTypeReader() );
+            //ADD_TYPEREADER( SPRITEFONT_TYPE, new SpriteFontTypeReader() );
             
             #undef ADD_TYPEREADER
+        }
+        
+        if ( ( str[ str.length() - 2 ] == '[' && str[ str.length() - 1 ] == ']' ) || str == "Microsoft.Xna.Framework.Content.ArrayReader" )
+        {
+            return arrays.get();
         }
         
         auto it = typeReaders.find( str );
@@ -50,6 +77,12 @@ namespace xnb
         {
             return it->second.get();
         }
+        
         return nullptr;
+    }
+    
+    std::string ITypeReader::getTypeReaderNameAtIndex( const File& file, int index )
+    {
+        return file.typeReaders[ index ].name;
     }
 }

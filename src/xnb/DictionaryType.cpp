@@ -1,6 +1,6 @@
 #include "xnb/DictionaryType.hpp"
 
-#include <iostream>
+#include "xnb/Util.hpp"
 
 namespace xnb
 {
@@ -20,11 +20,11 @@ namespace xnb
         return str;
     }
     
-    std::unique_ptr< Data >&& DictionaryTypeReader::read( std::istream& in, const std::string& fullDecl )
+    std::unique_ptr< Data > DictionaryTypeReader::read( const File& file, std::istream& in, const std::string& fullDecl )
     {
         std::size_t startGeneric = fullDecl.find( '`' );
         std::size_t startType1 = startGeneric + 4;
-        std::size_t endType1 = fullDecl.find( ',', startGeneric + 3 );
+        std::size_t endType1 = fullDecl.find( ',', startGeneric + 4 );
         std::size_t startType2 = fullDecl.find( "],[" ) + 3;
         std::size_t endType2 = fullDecl.find( ',', startType2 );
         
@@ -36,16 +36,42 @@ namespace xnb
         
         sf::Uint32 count;
         in.read( reinterpret_cast< char* >( &count ), sizeof( count ) );
-        std::cout << type1 << ' ' << type2 << ' ' << count << ' ' << (int)in.get() << std::endl;
         for ( std::size_t i = 0; i < count; ++i )
         {
-            auto key = ITypeReader::getTypeReader( type1 )->read( in, type1 );
-            auto value = ITypeReader::getTypeReader( type2 )->read( in, type2 );
+            std::unique_ptr< Data > key;
+            auto keyReader = ITypeReader::getTypeReader( type1 );
+            if ( !keyReader->resultIsValueType() )
+            {
+                int properReader = read7BitEncodedInt( in );
+                if ( properReader != 0 )
+                {
+                    keyReader = ITypeReader::getTypeReader( getTypeReaderNameAtIndex( file, properReader - 1 ) );
+                    key = keyReader->read( file, in, type1 );
+                }
+            }
+            else key = keyReader->read( file, in, type1 );
+            
+            std::unique_ptr< Data > value;
+            auto valueReader = ITypeReader::getTypeReader( type2 );
+            if ( !valueReader->resultIsValueType() )
+            {
+                int properReader = read7BitEncodedInt( in );
+                if ( properReader != 0 )
+                {
+                    valueReader = ITypeReader::getTypeReader( getTypeReaderNameAtIndex( file, properReader - 1 ) );
+                    value = valueReader->read( file, in, type2 );
+                }
+            }
+            else value = valueReader->read( file, in, type2 );
+            
             dict->data.emplace( std::move( key ), std::move( value ) );
         }
-        std::cout<<"Y:"<<data.get()<<' ';
-        auto x=std::move(data);
-        std::cout<<x.get()<<std::endl;
+        
         return std::move( data );
+    }
+    
+    bool DictionaryTypeReader::resultIsValueType() const
+    {
+        return false;
     }
 }

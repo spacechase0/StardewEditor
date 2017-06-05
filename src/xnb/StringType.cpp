@@ -14,12 +14,17 @@ namespace xnb
         return '"' + value + '"';
     }
     
-    std::unique_ptr< Data >&& StringTypeReader::read( std::istream& in, const std::string& fullDecl )
+    std::unique_ptr< Data > StringTypeReader::read( const File& file, std::istream& in, const std::string& fullDecl )
     {
         int bytes = read7BitEncodedInt( in );
         std::string str( bytes, '\0' );
         in.read( &str[ 0 ], bytes );
         
         return std::move( std::unique_ptr< Data >( new StringData( str ) ) );
+    }
+    
+    bool StringTypeReader::resultIsValueType() const
+    {
+        return false;
     }
 }

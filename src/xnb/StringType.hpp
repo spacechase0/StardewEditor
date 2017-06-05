@@ -21,7 +21,9 @@ namespace xnb
     class StringTypeReader : public ITypeReader
     {
         public:
-            virtual std::unique_ptr< Data >&& read( std::istream& in, const std::string& fullDecl ) override;
+            virtual std::unique_ptr< Data > read( const File& file, std::istream& in, const std::string& fullDecl ) override;
+            
+            virtual bool resultIsValueType() const override;
     };
     
     constexpr const char* STRING_TYPE = "System.String";

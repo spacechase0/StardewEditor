@@ -107,7 +107,7 @@ void Map::changeCurrentMap( const std::string& map )
 {
     if ( !tex.loadFromFile( ( fs::path( editor.config.getDataFolder() ) / "maps" / ( map + ".png" ) ).string() ) )
     {
-        std::cout << "Error: Couldn't load map image\n";
+        util::log( "Error: Couldn't load map image\n" );
         return;
     }
     current = map;
