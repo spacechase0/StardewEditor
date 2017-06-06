@@ -95,36 +95,6 @@
 		<Unit filename="ui/SoundPlayer.hpp" />
 		<Unit filename="ui/UiModule.cpp" />
 		<Unit filename="ui/UiModule.hpp" />
-		<Unit filename="xnb/ArrayType.cpp" />
-		<Unit filename="xnb/ArrayType.hpp" />
-		<Unit filename="xnb/Data.cpp" />
-		<Unit filename="xnb/Data.hpp" />
-		<Unit filename="xnb/DictionaryType.cpp" />
-		<Unit filename="xnb/DictionaryType.hpp" />
-		<Unit filename="xnb/File.cpp" />
-		<Unit filename="xnb/File.hpp" />
-		<Unit filename="xnb/ITypeReader.cpp" />
-		<Unit filename="xnb/ITypeReader.hpp" />
-		<Unit filename="xnb/ListType.cpp">
-			<Option compile="0" />
-			<Option link="0" />
-		</Unit>
-		<Unit filename="xnb/ListType.hpp" />
-		<Unit filename="xnb/PrimitiveType.hpp" />
-		<Unit filename="xnb/PrimitiveType.inl" />
-		<Unit filename="xnb/SpriteFontType.cpp">
-			<Option compile="0" />
-			<Option link="0" />
-		</Unit>
-		<Unit filename="xnb/SpriteFontType.hpp" />
-		<Unit filename="xnb/StringType.cpp" />
-		<Unit filename="xnb/StringType.hpp" />
-		<Unit filename="xnb/TbinType.cpp" />
-		<Unit filename="xnb/TbinType.hpp" />
-		<Unit filename="xnb/TextureType.cpp" />
-		<Unit filename="xnb/TextureType.hpp" />
-		<Unit filename="xnb/Util.cpp" />
-		<Unit filename="xnb/Util.hpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />
