@@ -8,3 +8,6 @@ src/StardewEditor.layout
 imgui.ini
 log.txt
 *.zip
+lzx
+libmspack-lzx
+XNB
