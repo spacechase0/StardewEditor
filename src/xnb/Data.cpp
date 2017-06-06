@@ -12,4 +12,9 @@ namespace xnb
     Data::~Data()
     {
     }
+    
+    std::vector< TypeReaderHeader > Data::getTypeReaders() const
+    {
+        return { getTypeReader() };
+    }
 }

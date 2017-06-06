@@ -21,14 +21,20 @@ namespace xnb
             std::map< std::unique_ptr< Data >, std::unique_ptr< Data > > data;
             
             virtual std::string toString() const override;
+            
+            virtual std::vector< TypeReaderHeader > getTypeReaders() const override;
+            virtual std::string getType() const override;
+            virtual TypeReaderHeader getTypeReader() const override;
     };
     
     class DictionaryTypeReader : public ITypeReader
     {
         public:
             virtual std::unique_ptr< Data > read( const File& file, std::istream& in, const std::string& fullDecl ) override;
+            virtual void write( const File& file, std::ostream& out, const Data* data ) override;
             
             virtual bool resultIsValueType() const override;
+            virtual std::string getReaderType() const override;
     };
     
     constexpr const char* DICTIONARY_TYPE = "System.Collections.Generic.Dictionary"; // TODO: Better

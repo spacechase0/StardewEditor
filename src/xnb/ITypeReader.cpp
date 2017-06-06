@@ -16,6 +16,11 @@
 
 namespace xnb
 {
+    bool operator == ( const TypeReaderHeader& a, const TypeReaderHeader& b )
+    {
+        return ( a.name == b.name && a.version == b.version );
+    }
+    
     ITypeReader::~ITypeReader()
     {
     }
@@ -56,7 +61,7 @@ namespace xnb
             ADD_TYPEREADER( STRING_TYPE, new StringTypeReader() );
             ADD_TYPEREADER( TEXTURE2D_TYPE, new Texture2DTypeReader() );
             ADD_TYPEREADER( TBIN_TYPE, new TbinTypeReader() );
-            ADD_TYPEREADER( LIST_TYPE, new ListTypeReader() );
+            //ADD_TYPEREADER( LIST_TYPE, new ListTypeReader() );
             //ADD_TYPEREADER( SPRITEFONT_TYPE, new SpriteFontTypeReader() );
             
             #undef ADD_TYPEREADER
@@ -84,5 +89,15 @@ namespace xnb
     std::string ITypeReader::getTypeReaderNameAtIndex( const File& file, int index )
     {
         return file.typeReaders[ index ].name;
+    }
+    
+    int ITypeReader::getIndexOfTypeReader( const File& file, const std::string& name )
+    {
+        for ( std::size_t i = 0; i < file.typeReaders.size(); ++i )
+        {
+            if ( file.typeReaders[ i ].name == name )
+                return i;
+        }
+        return -1;
     }
 }

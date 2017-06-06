@@ -105,11 +105,17 @@
 		<Unit filename="xnb/File.hpp" />
 		<Unit filename="xnb/ITypeReader.cpp" />
 		<Unit filename="xnb/ITypeReader.hpp" />
-		<Unit filename="xnb/ListType.cpp" />
+		<Unit filename="xnb/ListType.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
 		<Unit filename="xnb/ListType.hpp" />
 		<Unit filename="xnb/PrimitiveType.hpp" />
 		<Unit filename="xnb/PrimitiveType.inl" />
-		<Unit filename="xnb/SpriteFontType.cpp" />
+		<Unit filename="xnb/SpriteFontType.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
 		<Unit filename="xnb/SpriteFontType.hpp" />
 		<Unit filename="xnb/StringType.cpp" />
 		<Unit filename="xnb/StringType.hpp" />

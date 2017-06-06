@@ -3,6 +3,8 @@
 
 #include <string>
 
+#include "xnb/ITypeReader.hpp"
+
 namespace xnb
 {
     class Data
@@ -14,6 +16,10 @@ namespace xnb
             //const std::string type;
             
             virtual std::string toString() const = 0;
+            
+            virtual std::vector< TypeReaderHeader > getTypeReaders() const;
+            virtual std::string getType() const = 0;
+            virtual TypeReaderHeader getTypeReader() const = 0;
     };
 }
 
