@@ -22,10 +22,8 @@ namespace xnb
     
     void write7BitEncodedInt( std::ostream& out, sf::Int32 i )
     {
-        std::cout<<"starting:\n";
         do
         {
-            std::cout<<"round:"<<i<<std::endl;
             char c = ( i & 0x7F );
             i = ( i >> 7 ) & ~0xFE0000000;
             if ( i != 0 )

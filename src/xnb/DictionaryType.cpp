@@ -89,14 +89,12 @@ namespace xnb
         startType2 = fullDecl.find( "],[" ) + 3;
         if ( fullDecl.find( ',', startType1 ) == fullDecl.find( ']', startType1 ) + 1 )
         {
-            std::cout<<"A";
             // My files don't have the full named with assembly info
             endType1 = fullDecl.find( ']', startType1 );
             endType2 = fullDecl.find( ']', startType2 + 3 );
         }
         else
         {
-            std::cout<<"B";
             endType1 = fullDecl.find( ',', startGeneric + 4 );
             endType2 = fullDecl.find( ',', startType2 );
         }

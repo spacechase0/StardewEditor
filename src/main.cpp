@@ -25,9 +25,10 @@ int main()
     
     xnb::File file;
     //if ( !file.loadFromFile( "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Stardew Valley\\Content\\Data\\eventConditions.xnb" ) )
-    //if ( !file.loadFromFile( "C:\\Users\\Chase\\Downloads\\alisci01-xnbdecompressor-26ea1b2f21fc\\alisci01-xnbdecompressor-26ea1b2f21fc\\bin\\Debug\\StardewContentDecompressed\\Characters\\Penny.xnb" ) )
-    //if ( !file.loadFromFile( "C:\\Users\\Chase\\Downloads\\alisci01-xnbdecompressor-26ea1b2f21fc\\alisci01-xnbdecompressor-26ea1b2f21fc\\bin\\Debug\\StardewContentDecompressed\\Data\\eventConditions.xnb" ) )
-    if ( !file.loadFromFile( "out.xnb" ) )
+    if ( !file.loadFromFile( "C:\\Users\\Chase\\Downloads\\alisci01-xnbdecompressor-26ea1b2f21fc\\alisci01-xnbdecompressor-26ea1b2f21fc\\bin\\Debug\\StardewContentDecompressed\\Characters\\Penny.xnb" ) )
+    //if ( !file.loadFromFile( "C:\\Users\\Chase\\Downloads\\alisci01-xnbdecompressor-26ea1b2f21fc\\alisci01-xnbdecompressor-26ea1b2f21fc\\bin\\Debug\\StardewContentDecompressed\\Maps\\Farm.xnb" ) )
+    //if ( !file.loadFromFile( "C:\\Users\\Chase\\Downloads\\alisci01-xnbdecompressor-26ea1b2f21fc\\alisci01-xnbdecompressor-26ea1b2f21fc\\bin\\Debug\\StardewContentDecompressed\\Data\\ObjectInformation.xnb" ) )
+    //if ( !file.loadFromFile( "out.xnb" ) )
     {
         util::log( "Failed to load XNB file." );
         return 1;
@@ -72,7 +73,7 @@ int main()
     {
         util::log( "Data: $\n", file.data->toString() );
     }
-    /*
+    
     if ( !file.writeToFile( "out.xnb" ) )
         util::log( "Failed to write to file!\n" );
     else
@@ -80,5 +81,5 @@ int main()
         xnb::File file2;
         if ( !file2.loadFromFile( "out.xnb" ) )
             util::log( "Failed to read file we just wrote!\n" );
-    */
+    }
 }

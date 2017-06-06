@@ -46,7 +46,7 @@ namespace
         std::string out( decompressed, '\0' );
         if ( lzx_decompress( &data[ 0 ], compressed, &out[ 0 ], decompressed, decomp.data ) != 0 )
             throw std::invalid_argument( util::format( "Error decompressing: $\n", LZX_ERROR_THING ) );
-        std::cout << out;
+        //std::cout << out;
         return out;
     }
 }
@@ -228,7 +228,6 @@ namespace xnb
     
     bool File::readData( std::istream& in )
     {
-        util::log("reading trs\n");
         typeReaders.resize( read7BitEncodedInt( in ) );
         for ( TypeReaderHeader& tr : typeReaders )
         {
@@ -247,7 +246,6 @@ namespace xnb
             type -= 1;
             std::string typeStr = typeReaders[ type ].name;
             
-            std::cout<<"TYPE:"<<typeStr<<std::endl;
             ITypeReader* reader = ITypeReader::getTypeReader( typeStr );
             if ( reader == nullptr )
                 throw std::invalid_argument( util::format( "Type not supported: $", typeStr ) );
