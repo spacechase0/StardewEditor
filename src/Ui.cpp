@@ -111,7 +111,7 @@ void Ui::other()
     {
         if ( ImGui::Begin( "Configuration" ) )
         {
-            ImGui::InputText( "Unpacked content", &editor.config.unpackedContent[ 0 ], 511 );
+            ImGui::InputText( "Content", &editor.config.content[ 0 ], 511 );
             //ImGui::InputText( "Data path", &editor.config.dataFolder[ 0 ], 511 );
             ImGui::InputText( "Extracted sounds", &editor.config.extractedSounds[ 0 ], 511 );
         }

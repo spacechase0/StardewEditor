@@ -219,6 +219,11 @@ namespace Event
             }
         }
         
+        return std::move( fromGameFormat( key, value ) );
+    }
+    
+    Data Data::fromGameFormat( const std::string& key, const std::string& value )
+    {
         Data data;
         
         std::size_t slash = key.find( '/' );

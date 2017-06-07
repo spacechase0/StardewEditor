@@ -1,11 +1,13 @@
 #include "Config.hpp"
 
+#include <boost/filesystem.hpp>
+#include <cstdlib>
 #include <fstream>
 #include <util/String.hpp>
 
 namespace
 {
-    const char* OPT_UNPACKED_CONTENT = "unpacked_content";
+    const char* OPT_CONTENT = "content";
     const char* OPT_DATA = "data";
     const char* OPT_EXTRACTED_SOUNDS = "extracted_sounds";
 }
@@ -38,15 +40,15 @@ bool Config::loadFromFile( const std::string& path )
         std::string opt = line.substr( 0, eq );
         std::string val = line.substr( eq + 1 );
         
-        if ( opt == OPT_UNPACKED_CONTENT )
-            unpackedContent = val;
+        if ( opt == OPT_CONTENT )
+            content = val;
         else if ( opt == OPT_DATA )
             dataFolder = val;
         else if ( opt == OPT_EXTRACTED_SOUNDS )
             extractedSounds = val;
     }
     
-    unpackedContent.resize( 512, '\0' );
+    content.resize( 512, '\0' );
     dataFolder.resize( 512, '\0' );
     extractedSounds.resize( 512, '\0' );
     
@@ -59,28 +61,28 @@ bool Config::saveToFile( const std::string& path ) const
     if ( !file )
         return false;
     
-    file << util::format( "$=$\n", OPT_UNPACKED_CONTENT, unpackedContent.c_str() );
+    file << util::format( "$=$\n", OPT_CONTENT, content.c_str() );
     file << util::format( "$=$\n", OPT_DATA, dataFolder.c_str() );
     file << util::format( "$=$\n", OPT_EXTRACTED_SOUNDS, extractedSounds.c_str() );
     
     return true;
 }
 
-void Config::setUnpackedContentFolder( const std::string& path )
+void Config::setContentFolder( const std::string& path )
 {
-    unpackedContent = path;
-    unpackedContent.resize( 512, '\0' );
+    content = path;
+    content.resize( 512, '\0' );
 }
 
-std::string Config::getUnpackedContentFolder() const
+std::string Config::getContentFolder() const
 {
-    return unpackedContent.c_str();
+    return content.c_str();
 }
 
 void Config::setDataFolder( const std::string& path )
 {
     dataFolder = path;
-    unpackedContent.resize( 512, '\0' );
+    dataFolder.resize( 512, '\0' );
 }
 
 std::string Config::getDataFolder() const
@@ -91,7 +93,7 @@ std::string Config::getDataFolder() const
 void Config::setExtractedSounds( const std::string& theExtractedSounds )
 {
     extractedSounds = theExtractedSounds;
-    unpackedContent.resize( 512, '\0' );
+    extractedSounds.resize( 512, '\0' );
 }
 
 std::string Config::getExtractedSounds() const
@@ -101,11 +103,30 @@ std::string Config::getExtractedSounds() const
 
 void Config::reset()
 {
-    unpackedContent = "./Content";
+    content = "./Content";
+    #if defined( SFML_SYSTEM_WINDOWS )
+    if ( fs::exists( "C:\\Program Files (x86)\\GalaxyClient\\Games\\Stardew Valley\\Content" ) )
+        content = "C:\\Program Files (x86)\\GalaxyClient\\Games\\Stardew Valley\\Content";
+    else if ( fs::exists( "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Stardew Valley\\Content" ) )
+        content = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Stardew Valley\\Content";
+    #elif defined( SFML_SYSTEM_MACOS )
+        std::string home = std::getenv( "HOME" );
+        if ( fs::exists( "/Applications/Stardew Valley.app/Contents/MacOS/Content" ) )
+            content = "/Applications/Stardew Valley.app/Contents/MacOS/Content";
+        else if ( fs::exists( home + "/Library/Application Support/Steam/steamapps/common/Stardew Valley/Contents/MacOS/Content" ) )
+            content = home + "/Library/Application Support/Steam/steamapps/common/Stardew Valley/Contents/MacOS/Content";
+    #else
+        if ( fs::exists( home + "/GOG Games/Stardew Valley/game/Content" ) )
+            content = home + "/GOG Games/Stardew Valley/game/Content";
+        else if ( fs::exists( home + "/.steam/steam/steamapps/common/Stardew Valley/Content" ) )
+            content = home + "/.steam/steam/steamapps/common/Stardew Valley/Content";
+        else if ( fs::exists( home + "/.local/share/Steam/steamapps/common/Stardew Valley/Content" ) )
+            content = home + "/.local/share/Steam/steamapps/common/Stardew Valley/Content";
+    #endif
     dataFolder = "./data";
     extractedSounds = "./sounds";
     
-    unpackedContent.resize( 512, '\0' );
+    content.resize( 512, '\0' );
     dataFolder.resize( 512, '\0' );
     extractedSounds.resize( 512, '\0' );
 }

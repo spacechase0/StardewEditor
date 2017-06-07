@@ -2,6 +2,7 @@
 #define GLOBAL_HPP
 
 #include <util/Logger.hpp>
+#include <SFML/Config.hpp>
 
 namespace boost
 {

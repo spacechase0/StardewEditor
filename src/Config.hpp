@@ -12,8 +12,8 @@ class Config
         bool loadFromFile( const std::string& path );
         bool saveToFile( const std::string& path ) const;
         
-        void setUnpackedContentFolder( const std::string& path );
-        std::string getUnpackedContentFolder() const;
+        void setContentFolder( const std::string& path );
+        std::string getContentFolder() const;
         
         void setDataFolder( const std::string& path );
         std::string getDataFolder() const;
@@ -24,7 +24,7 @@ class Config
         void reset();
     
     private:
-        std::string unpackedContent;
+        std::string content;
         std::string dataFolder;
         std::string extractedSounds;
         

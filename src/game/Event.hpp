@@ -78,6 +78,7 @@ namespace Event
         std::vector< Command > commands;
         
         static Data fromGameFormat( const std::string& line );
+        static Data fromGameFormat( const std::string& key, const std::string& value );
         std::string toGameFormat() const;
         
         int oldId;

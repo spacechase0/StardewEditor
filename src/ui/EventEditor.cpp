@@ -3,6 +3,9 @@
 #include <boost/filesystem.hpp>
 #include <imgui.h>
 #include <imgui_internal.h> // I'm so terrible
+#include <xnb/DictionaryType.hpp>
+#include <xnb/File.hpp>
+#include <xnb/StringType.hpp>
 
 #include "Editor.hpp"
 #include "Ui.hpp"
@@ -23,11 +26,11 @@ EventEditor::EventEditor( Editor& theEditor, Ui& theUi )
     ui( theUi )
 {
     eventFiles.clear();
-    for ( fs::directory_iterator it( fs::path( editor.config.getUnpackedContentFolder() ) / "Data" / "Events" );
+    for ( fs::directory_iterator it( fs::path( editor.config.getContentFolder() ) / "Data" / "Events" );
           it != fs::directory_iterator(); ++it )
     {
         fs::path file = ( * it );
-        if ( file.extension() == ".yaml" && file.stem() == file.stem().stem() )
+        if ( file.extension() == ".xnb" && file.stem() == file.stem().stem() )
         {
             eventFiles.insert( file.stem().string() );
         }
@@ -447,38 +450,41 @@ void EventEditor::loadEventList( const std::string& map )
     eventBranches.clear();
     active = nullptr;
     
-    std::ifstream file( ( fs::path( editor.config.getUnpackedContentFolder() ) / "data" / "Events" / ( map + ".yaml" ) ).string() );
-    if ( !file )
+    xnb::File file;
+    if ( !file.loadFromFile( ( fs::path( editor.config.getContentFolder() ) / "data" / "Events" / ( map + ".xnb" ) ).string() ) )
         return;
     
-    bool foundContent = false;
-    while ( true )
+    const xnb::DictionaryData* data = dynamic_cast< const xnb::DictionaryData* >( file.data.get() );
+    if ( data == nullptr )
     {
-        std::string line;
-        std::getline( file, line );
-        if ( !file )
-            break;
-        
-        if ( !foundContent )
+        util::log( "Event data must be a dictionary! $\n", file.data->toString() );
+        return;
+    }
+    
+    for ( const auto& pair : data->data )
+    {
+        const xnb::StringData* keyData = dynamic_cast< const xnb::StringData* >( pair.first.get() );
+        const xnb::StringData* valueData = dynamic_cast< const xnb::StringData* >( pair.second.get() );
+        if ( keyData == nullptr || valueData == nullptr )
         {
-            if ( line.length() < 8 || line.substr( 0, 8 ) != "content:" )
-                continue;
-            foundContent = true;
+            util::log( "Bad event data type? $ $\n", pair.first->toString(), pair.second->toString() );
+            continue;
         }
-        else if ( line.length() >= 4 )
+        
+        Event::Data event = Event::Data::fromGameFormat( keyData->value, valueData->value );
+        if ( event.id == -1 && event.branchName == "" )
         {
-            Event::Data event = Event::Data::fromGameFormat( line );
-            if ( event.id == -1 && event.branchName == "" )
-                continue;
-            
-            if ( event.id != -1 )
-            {
-                events.insert( std::make_pair( event.id, event ) );
-            }
-            else
-            {
-                eventBranches.insert( std::make_pair( event.branchName.c_str(), event ) );
-            }
+            util::log( "Bad event data? $ $\n", pair.first->toString(), pair.second->toString() );
+            continue;
+        }
+        
+        if ( event.id != -1 )
+        {
+            events.insert( std::make_pair( event.id, event ) );
+        }
+        else
+        {
+            eventBranches.insert( std::make_pair( event.branchName.c_str(), event ) );
         }
     }
 }

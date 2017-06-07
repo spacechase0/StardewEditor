@@ -4,6 +4,7 @@
 
 #include "Config.hpp"
 #include "Editor.hpp"
+#include "Xnb.hpp"
 
 namespace
 {
@@ -86,13 +87,13 @@ void Actor::render( sf::RenderWindow& window )
 
 void Actor::init()
 {
-    fs::path path( editor.config.getUnpackedContentFolder() );
+    fs::path path( editor.config.getContentFolder() );
     path /= "Characters";
     if ( name.length() >= 6 && name.substr( 0, 6 ) == "farmer" )
-        path = path / "Farmer" / "farmer_base.png";
-    else path /= name + ".png";
+        path = path / "Farmer" / "farmer_base";
+    else path /= name + "";
     
-    tex.loadFromFile( path.string() );
+    loadTextureXnb( tex, path.string() );
     spr.setTexture( tex );
     spr.setPosition( tilePos.x * TILE_SIZE, tilePos.y * TILE_SIZE );
     spr.setTextureRect( sf::IntRect( 0, facing * 32, 16, 32 ) );
@@ -110,12 +111,12 @@ void Actor::init()
         farmerData->legs = spr;
         farmerData->legs.setTextureRect( sf::IntRect( rect.left + 18 * 16, rect.top, rect.width, rect.height ) );
         farmerData->legs.setColor( sf::Color( 46, 85, 183 ) );
-        farmerData->shirtTex.loadFromFile( ( path.parent_path() / "shirts.png" ).string() );
+        loadTextureXnb( farmerData->shirtTex, ( path.parent_path() / "shirts" ).string() );
         farmerData->shirt.setTexture( farmerData->shirtTex );
         farmerData->shirt.setPosition( spr.getPosition() );
         farmerData->shirt.move( 4, -1 );
         farmerData->shirt.setTextureRect( sf::IntRect( 0, shirtSpot[ facing ], 8, 8 ) );
-        farmerData->hairTex.loadFromFile( ( path.parent_path() / "hairstyles.png" ).string() );
+        loadTextureXnb( farmerData->hairTex, ( path.parent_path() / "hairstyles" ).string() );
         farmerData->hair.setTexture( farmerData->hairTex );
         farmerData->hair.setPosition( spr.getPosition() );
         farmerData->hair.move( 0, 1 );

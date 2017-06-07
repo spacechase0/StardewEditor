@@ -6,6 +6,8 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Window/Event.hpp>
 
+#include "Xnb.hpp"
+
 namespace fs = boost::filesystem;
 
 const char* Editor::CONFIG_FILE = "editor.cfg";
@@ -20,10 +22,7 @@ Editor::Editor( int argc, char* argv[] )
         config.loadFromFile( configPath.string() );
     else config.saveToFile( CONFIG_FILE );
     
-    if ( !dialogueFont.loadFromFile( ( fs::path( config.getUnpackedContentFolder() ) / "LooseSprites" / "font_bold.png" ).string() ) )
-    {
-        util::log( "Failed to load dialogue font.\n" );
-    }
+    loadTextureXnb( dialogueFont,  ( fs::path( config.getContentFolder() ) / "LooseSprites" / "font_bold" ).string() );
     
     refreshMapList();
     reloadSoundList();
@@ -71,7 +70,7 @@ void Editor::run()
 void Editor::refreshMapList()
 {
     if ( !fs::exists( fs::path( config.getDataFolder() ) / "maps" ) ||
-         !fs::exists( fs::path( config.getUnpackedContentFolder() ) / "Data" / "Events" ) )
+         !fs::exists( fs::path( config.getContentFolder() ) / "Data" / "Events" ) )
         return;
     
     maps.clear();
