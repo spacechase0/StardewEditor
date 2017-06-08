@@ -80,6 +80,8 @@ namespace Event
         static Data fromGameFormat( const std::string& line );
         static Data fromGameFormat( const std::string& key, const std::string& value );
         std::string toGameFormat() const;
+        std::string toGameFormatKey() const;
+        std::string toGameFormatValue() const;
         
         int oldId;
         std::string oldBranchName;

@@ -15,6 +15,7 @@ const char* Editor::CONFIG_FILE = "editor.cfg";
 Editor::Editor( int argc, char* argv[] )
 :   map( * this ),
     ui( * this ),
+    gi( * this ),
     EXEC_PATH( fs::path( argv[ 0 ] ).parent_path().string() )
 {
     auto configPath = fs::path( EXEC_PATH ) / CONFIG_FILE;
@@ -56,6 +57,7 @@ void Editor::run()
         
         ui.update();
         map.update();
+        gi.update();
         
         window.clear( sf::Color::White );
         window.resetGLStates();

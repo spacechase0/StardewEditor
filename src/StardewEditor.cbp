@@ -19,6 +19,7 @@
 				<Linker>
 					<Add option="-lsc0-xnb-d" />
 					<Add option="-lsc0-utility-d" />
+					<Add option="-lsfml-network-s-d" />
 					<Add option="-lsfml-audio-s-d" />
 					<Add option="-lsfml-graphics-s-d" />
 					<Add option="-lsfml-window-s-d" />
@@ -43,6 +44,7 @@
 					<Add option="-s" />
 					<Add option="-lsc0-xnb" />
 					<Add option="-lsc0-utility" />
+					<Add option="-lsfml-network-s" />
 					<Add option="-lsfml-audio-s" />
 					<Add option="-lsfml-graphics-s" />
 					<Add option="-lsfml-window-s" />
@@ -61,6 +63,7 @@
 			<Add directory="../XNB/src" />
 		</Compiler>
 		<Linker>
+			<Add option="-lws2_32" />
 			<Add option="-lopenal32" />
 			<Add option="-lflac" />
 			<Add option="-lvorbisenc" />
@@ -94,6 +97,14 @@
 		<Unit filename="game/Event.hpp" />
 		<Unit filename="imconfig.h" />
 		<Unit filename="imgui_.cpp" />
+		<Unit filename="integration/GameIntegration.cpp" />
+		<Unit filename="integration/GameIntegration.hpp" />
+		<Unit filename="integration/Packet.cpp" />
+		<Unit filename="integration/Packet.hpp" />
+		<Unit filename="integration/PlayEventPacket.cpp" />
+		<Unit filename="integration/PlayEventPacket.hpp" />
+		<Unit filename="integration/ProtocolPacket.cpp" />
+		<Unit filename="integration/ProtocolPacket.hpp" />
 		<Unit filename="main.cpp" />
 		<Unit filename="ui/EventEditor.cpp" />
 		<Unit filename="ui/EventEditor.hpp" />

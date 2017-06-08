@@ -186,7 +186,7 @@ void EventEditor::refresh( Refresh::Type type )
 void EventEditor::info()
 {
     ImGui::SetNextWindowPos( ImVec2( 25, 25 ), ImGuiSetCond_Appearing );
-    ImGui::SetNextWindowSize( ImVec2( 250, 100 ), ImGuiSetCond_Appearing );
+    ImGui::SetNextWindowSize( ImVec2( 250, 125 ), ImGuiSetCond_Appearing );
     if ( ImGui::Begin( "Event Info" ) )
     {
         if ( active->id != -1 )
@@ -205,6 +205,9 @@ void EventEditor::info()
             }
             ImGui::InputText( "Music", &active->music[ 0 ], 31 );
             ImGui::InputInt2( "Viewport", &active->viewport.x );
+            
+            if ( ImGui::Button( "Play" ) )
+                editor.gi.playEvent( active->toGameFormatValue() );
         }
         else
         {

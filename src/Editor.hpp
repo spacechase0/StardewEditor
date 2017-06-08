@@ -7,6 +7,7 @@
 #include <string>
 
 #include "Config.hpp"
+#include "integration/GameIntegration.hpp"
 #include "Map.hpp"
 #include "Ui.hpp"
 
@@ -29,6 +30,7 @@ class Editor
         sf::RenderWindow window;
         Map map;
         Ui ui;
+        GameIntegration gi;
         
         sf::Texture dialogueFont;
         
