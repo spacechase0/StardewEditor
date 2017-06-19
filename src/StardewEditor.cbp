@@ -17,6 +17,7 @@
 					<Add option="-g" />
 				</Compiler>
 				<Linker>
+					<Add option="-lsc0-tbin-d" />
 					<Add option="-lsc0-xnb-d" />
 					<Add option="-lsc0-utility-d" />
 					<Add option="-lsfml-network-s-d" />
@@ -41,6 +42,7 @@
 				<Linker>
 					<Add option="-s" />
 					<Add option="-static" />
+					<Add option="-lsc0-tbin" />
 					<Add option="-lsc0-xnb" />
 					<Add option="-lsc0-utility" />
 					<Add option="-lsfml-network-s" />

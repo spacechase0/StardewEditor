@@ -130,9 +130,9 @@ void Config::reset()
         std::string steam = getRegistryValue( "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Steam App 413150", "InstallLocation" );
         std::string gog = getRegistryValue( "SOFTWARE\\WOW6432Node\\GOG.com\\Games\\1453375253", "PATH" );
         if ( steam != "" && fs::exists( steam ) )
-            content = steam;
+            content = steam + "\\Content";
         else if ( gog != "" && fs::exists( gog ) )
-            content = gog;
+            content = gog + "\\Content";
     }
     #elif defined( SFML_SYSTEM_MACOS )
         std::string home = std::getenv( "HOME" );

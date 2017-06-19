@@ -2,6 +2,9 @@
 
 #include <boost/filesystem.hpp>
 #include <SFML/Graphics.hpp>
+#include <xnb/File.hpp>
+#include <xnb/TextureType.hpp>
+#include <xnb/TbinType.hpp>
 
 #include "Editor.hpp"
 
@@ -103,14 +106,79 @@ void Map::render( sf::RenderWindow& window )
     }
 }
 
-void Map::changeCurrentMap( const std::string& map )
+void Map::changeCurrentMap( const std::string& map_ )
 {
-    if ( !tex.loadFromFile( ( fs::path( editor.config.getDataFolder() ) / "maps" / ( map + ".png" ) ).string() ) )
+    xnb::File file;
+    if ( !file.loadFromFile( ( fs::path( editor.config.getContentFolder() ) / "Maps" / ( map_ + ".xnb" ) ).string() ) )
     {
-        util::log( "[ERROR] Couldn't load map image\n" );
+        util::log( "[ERROR] Couldn't load map XNB\n" );
         return;
     }
-    current = map;
+    auto data = dynamic_cast< xnb::TbinData* >( file.data.get() );
+    tbin::Map map;
+    std::istringstream strm = std::istringstream( data->data );
+    if ( !map.loadFromStream( strm ) )
+    {
+        util::log( "[ERROR] Couldn't load map tbin\n" );
+        return;
+    }
+
+    std::map< std::string, sf::Texture > texTs;
+    for ( auto its = map.tilesheets.begin(); its != map.tilesheets.end(); ++its )
+    {
+        xnb::File xnbImage;
+        xnbImage.loadFromFile( ( fs::path( editor.config.getContentFolder() ) / "Maps" / ( its->image + ".xnb" ) ).string() );
+        xnb::Texture2DData* data = dynamic_cast< xnb::Texture2DData* >( xnbImage.data.get() );
+
+        texTs[ its->image ].loadFromImage( data->data[ 0 ] );
+    }
+
+    sf::RenderTexture renTex;
+    renTex.create( map.layers[ 0 ].layerSize.x * map.layers[ 0 ].tileSize.x, map.layers[ 0 ].layerSize.y * map.layers[ 0 ].tileSize.y );
+    renTex.clear( sf::Color::Black );
+    for ( auto itl = map.layers.begin(); itl != map.layers.end(); ++itl )
+    {
+        if ( !itl->visible || itl->id == "Paths" )
+            continue;
+
+        for ( std::size_t i = 0; i < itl->tiles.size(); ++i )
+        {
+            std::size_t ix = i % itl->layerSize.x;
+            std::size_t iy = i / itl->layerSize.x;
+            const tbin::Tile& tile = itl->tiles[ i ];
+            if ( tile.isNullTile() )
+                continue;
+
+            tbin::TileSheet* found = nullptr;
+            for ( auto its = map.tilesheets.begin(); its != map.tilesheets.end(); ++its )
+            {
+                if ( its->id == tile.tilesheet || ( tile.animatedData.frames.size() > 0 && its->id == tile.animatedData.frames[0].tilesheet ) )
+                {
+                    found = &( * its );
+                    break;
+                }
+            }
+
+            auto ti = tile.staticData.tileIndex;
+            if ( tile.animatedData.frames.size() > 0 )
+            {
+                ti = tile.animatedData.frames[ 0 ].staticData.tileIndex;
+            }
+
+            int sx = found->sheetSize.x;// / found->tileSize.x;
+            int sy = found->sheetSize.y;// / found->tileSize.y;
+
+            sf::Sprite spr( texTs[ found->image ] );
+            spr.setTextureRect( sf::IntRect( ti % sx * found->tileSize.x, ti / sx * found->tileSize.y, found->tileSize.x, found->tileSize.y ) );
+            spr.setPosition( ix * itl->tileSize.x, iy * itl->tileSize.y );
+            renTex.draw( spr );
+        }
+    }
+    renTex.display();
+
+    tex.loadFromImage( renTex.getTexture().copyToImage() );
+
+    current = map_;
     spr.setTexture( tex, true );
     spr.setPosition( 0, 0 );
     actors.clear();

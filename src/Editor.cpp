@@ -22,9 +22,9 @@ Editor::Editor( int argc, char* argv[] )
     if ( fs::exists( configPath ) )
         config.loadFromFile( configPath.string() );
     else config.saveToFile( CONFIG_FILE );
-    
+
     loadTextureXnb( dialogueFont,  ( fs::path( config.getContentFolder() ) / "LooseSprites" / "font_bold" ).string() );
-    
+
     refreshMapList();
     reloadSoundList();
 }
@@ -39,7 +39,7 @@ void Editor::run()
     window.create( sf::VideoMode( 800, 600 ), "Stardew Editor" );
     window.setFramerateLimit( 60 );
     ImGui::SFML::Init( window );
-    
+
     bool isRunning = true;
     while ( isRunning )
     {
@@ -50,40 +50,38 @@ void Editor::run()
             {
                 isRunning = false;
             }
-            
+
             ui.update( event );
             map.update( event );
         }
-        
+
         ui.update();
         map.update();
         gi.update();
-        
+
         window.clear( sf::Color::White );
         window.resetGLStates();
         map.render( window );
         ui.render( window );
         window.display();
     }
-    
+
     ImGui::SFML::Shutdown();
 }
 
 void Editor::refreshMapList()
 {
-    if ( !fs::exists( fs::path( config.getDataFolder() ) / "maps" ) ||
-         !fs::exists( fs::path( config.getContentFolder() ) / "Data" / "Events" ) )
-        return;
-    
-    maps.clear();
-    for ( fs::directory_iterator it( fs::path( config.getDataFolder() ) / "maps" );
-          it != fs::directory_iterator(); ++it )
+    std::ifstream file( ( fs::path( config.getDataFolder() ) / "locations.txt" ).string() );
+    while ( true )
     {
-        fs::path file = ( * it );
-        if ( file.extension() == ".png" )
-            maps.insert( file.stem().string() );
+        std::string line;
+        std::getline( file, line );
+        if ( !file )
+            break;
+
+        maps.insert( line );
     }
-    
+
     ui.sendRefresh( Refresh::MapList );
 }
 
@@ -92,7 +90,7 @@ void Editor::reloadSoundList()
     std::ifstream file( ( fs::path( config.getDataFolder() ) / "soundCues.txt" ).string() );
     if ( !file )
         return;
-    
+
     sounds.clear();
     while ( true )
     {
@@ -100,16 +98,16 @@ void Editor::reloadSoundList()
         std::getline( file, line );
         if ( !file )
             break;
-        
+
         std::size_t eq = line.find( '=' );
         if ( eq == std::string::npos ) continue;
-        
+
         std::string cue = line.substr( 0, eq );
         std::vector< std::string > inds = util::tokenize( line.substr( eq + 1 ), "," );
-        
+
         sounds.insert( std::make_pair( cue, inds ) );
     }
-    
+
     ui.sendRefresh( Refresh::Sounds );
 }
 
