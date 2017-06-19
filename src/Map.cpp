@@ -14,7 +14,7 @@ Map::Map( Editor& theEditor )
     {
         int ix = i % TILE_SIZE;
         int iy = i / TILE_SIZE;
-        
+
         if ( ix == 0 || iy == 0 || ix == TILE_SIZE - 1 || iy == TILE_SIZE - 1 )
         {
             gridImage.setPixel( ix, iy, sf::Color( 0, 0, 0, 64 ) );
@@ -29,10 +29,10 @@ void Map::update()
     if ( firstUpdate )
     {
         view = sf::View( sf::FloatRect( 0, 0, editor.window.getSize().x, editor.window.getSize().y ) );
-        
+
         firstUpdate = false;
     }
-    
+
     if ( dragging && !sf::Mouse::isButtonPressed( sf::Mouse::Left ) )
     {
         dragging = false;
@@ -57,12 +57,12 @@ void Map::update( const sf::Event& event )
     else if ( event.type == sf::Event::EventType::MouseWheelScrolled && editor.ui.isMouseOutside() )
     {
         sf::Vector2f worldPos = editor.window.mapPixelToCoords( sf::Vector2i( event.mouseWheelScroll.x, event.mouseWheelScroll.y ), view );
-         
+
         if ( event.mouseWheelScroll.delta < 0 )
             view.zoom( 1.1 );
         else
             view.zoom( 0.9 );
-        
+
         sf::Vector2f newWorldPos = editor.window.mapPixelToCoords( sf::Vector2i( event.mouseWheelScroll.x, event.mouseWheelScroll.y ), view );
         view.move( worldPos - newWorldPos );
     }
@@ -77,7 +77,7 @@ void Map::update( const sf::Event& event )
 void Map::render( sf::RenderWindow& window )
 {
     window.setView( view );
-    
+
     if ( dragging )
     {
         sf::Vector2i mouse = sf::Vector2i( sf::Mouse::getPosition( window ) );
@@ -85,11 +85,11 @@ void Map::render( sf::RenderWindow& window )
         view.move( dragFrom - dragTo );
         dragFrom = pixelToWorld( mouse );
     }
-    
+
     if ( current != "" )
     {
         window.draw( spr );
-        
+
         sf::Vertex v[ 4 ];
         v[ 0 ] = sf::Vertex( sf::Vector2f( 0, 0 ), sf::Vector2f( 0, 0 ) );
         v[ 1 ] = sf::Vertex( sf::Vector2f( tex.getSize().x, 0 ), sf::Vector2f( tex.getSize().x, 0 ) );
@@ -107,7 +107,7 @@ void Map::changeCurrentMap( const std::string& map )
 {
     if ( !tex.loadFromFile( ( fs::path( editor.config.getDataFolder() ) / "maps" / ( map + ".png" ) ).string() ) )
     {
-        std::cout << "Error: Couldn't load map image\n";
+        util::log( "[ERROR] Couldn't load map image\n" );
         return;
     }
     current = map;

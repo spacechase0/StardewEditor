@@ -26,16 +26,19 @@ EventEditor::EventEditor( Editor& theEditor, Ui& theUi )
     ui( theUi )
 {
     eventFiles.clear();
-    for ( fs::directory_iterator it( fs::path( editor.config.getContentFolder() ) / "Data" / "Events" );
-          it != fs::directory_iterator(); ++it )
+    fs::path path = fs::path( editor.config.getContentFolder() ) / "Data" / "Events";
+    if ( fs::exists( path ) )
     {
-        fs::path file = ( * it );
-        if ( file.extension() == ".xnb" && file.stem() == file.stem().stem() )
+        for ( fs::directory_iterator it( path ); it != fs::directory_iterator(); ++it )
         {
-            eventFiles.insert( file.stem().string() );
+            fs::path file = ( * it );
+            if ( file.extension() == ".xnb" && file.stem() == file.stem().stem() )
+            {
+                eventFiles.insert( file.stem().string() );
+            }
         }
     }
-    
+
     reloadPreconditionTypes();
 }
 
@@ -54,7 +57,7 @@ void EventEditor::menu()
                 active = &dummy;
                 editor.map.clearActors();
             }
-            
+
             selected = false;
             ImGui::MenuItem( "Named", nullptr, &selected );
             if ( selected )
@@ -64,10 +67,10 @@ void EventEditor::menu()
                 active = &dummy;
                 editor.map.clearActors();
             }
-            
+
             ImGui::EndMenu();
         }
-        
+
         if ( ImGui::BeginMenu( "Reload" ) )
         {
             bool refresh = false;
@@ -76,17 +79,17 @@ void EventEditor::menu()
             {
                 reloadPreconditionTypes();
             }
-            
+
             refresh = false;
             ImGui::MenuItem( "Current map events", nullptr, &refresh );
             if ( refresh )
             {
                 loadEventList( editor.map.getCurrentMap() );
             }
-            
+
             ImGui::EndMenu();
         }
-        
+
         if ( ImGui::BeginMenu( "Export" ) )
         {
             bool selected = false;
@@ -95,11 +98,12 @@ void EventEditor::menu()
             {
                 ui.showExport( active->toGameFormat(), false );
             }
-            
+
             selected = false;
             ImGui::MenuItem( "All", nullptr, &selected );
             if ( selected )
             {
+                /*
                 std::stringstream ss;
                 std::ifstream file( ( fs::path( editor.config.getDataFolder() ) / "eventHeader.txt" ).string() );
                 while ( true )
@@ -115,15 +119,32 @@ void EventEditor::menu()
                 for ( const auto& entry : eventBranches )
                     ss << "    " << entry.second.toGameFormat() << " #!String" << std::endl;
                 ss << std::endl;
-                
+
                 ui.showExport( ss.str() );
+                */
+
+                fs::path path = fs::path( editor.config.getExportFolder() ) / "Data" / "Events";
+                if ( !fs::exists( path ) )
+                    fs::create_directories( path );
+
+                xnb::File file;
+                file.data.reset( new xnb::DictionaryData( xnb::STRING_TYPE, xnb::STRING_TYPE ) );
+                xnb::DictionaryData* dict = static_cast< xnb::DictionaryData* >( file.data.get() );
+
+                for ( const auto& entry : events )
+                    dict->data.emplace( new xnb::StringData( entry.second.toGameFormatKey() ), new xnb::StringData( entry.second.toGameFormatValue() ) );
+                for ( const auto& entry : eventBranches )
+                    dict->data.emplace( new xnb::StringData( entry.second.toGameFormatKey() ), new xnb::StringData( entry.second.toGameFormatValue() ) );
+
+                if ( !file.writeToFile( ( path / ( editor.map.getCurrentMap() + ".xnb" ) ).string() ) )
+                    util::log( "[ERROR] Failed to save exported XNB.\n" );
             }
-            
+
             ImGui::EndMenu();
         }
-        
+
         ImGui::MenuItem( "", nullptr );
-        
+
         for ( auto& event : events )
         {
             bool selected = active == &event.second;
@@ -142,7 +163,7 @@ void EventEditor::menu()
                 }
             }
         }
-        
+
         for ( auto& event : eventBranches )
         {
             bool selected = active == &event.second;
@@ -161,7 +182,7 @@ void EventEditor::menu()
                 }
             }
         }
-        
+
         ImGui::EndMenu();
     }
 }
@@ -170,7 +191,7 @@ void EventEditor::update()
 {
     if ( !active )
         return;
-    
+
     info();
     preconditions();
     actors();
@@ -205,7 +226,7 @@ void EventEditor::info()
             }
             ImGui::InputText( "Music", &active->music[ 0 ], 31 );
             ImGui::InputInt2( "Viewport", &active->viewport.x );
-            
+
             if ( ImGui::Button( "Play" ) )
                 editor.gi.playEvent( active->toGameFormatValue() );
         }
@@ -224,7 +245,7 @@ void EventEditor::info()
                 active = &eventBranches[ data.branchName.c_str() ];
             }
         }
-        
+
     }
     ImGui::End();
 }
@@ -233,7 +254,7 @@ void EventEditor::preconditions()
 {
     if ( active->id == -1 )
         return;
-    
+
     ImGui::SetNextWindowPos( ImVec2( 25, 150 ), ImGuiSetCond_Appearing );
     ImGui::SetNextWindowSize( ImVec2( 250, 200 ), ImGuiSetCond_Appearing );
     if ( ImGui::Begin( "Event Preconditions" ) )
@@ -258,7 +279,7 @@ void EventEditor::preconditions()
                 }
                 continue;
             }
-            
+
             std::size_t iVal = 0;
             for ( std::size_t i = 0; i < type.paramTypes.size(); ++i, ++iVal )
             {
@@ -273,7 +294,7 @@ void EventEditor::preconditions()
                                 prec.params[ iVal ] = util::toString( x );
                         }
                         break;
-                    
+
                     case Event::ParamType::Double:
                         {
                             float x = util::fromString< float >( prec.params[ iVal ] );
@@ -283,7 +304,7 @@ void EventEditor::preconditions()
                                 prec.params[ iVal ] = util::toString( x );
                         }
                         break;
-                    
+
                     case Event::ParamType::Bool:
                         {
                             bool x = prec.params[ iVal ] == "true";
@@ -293,7 +314,7 @@ void EventEditor::preconditions()
                                 prec.params[ iVal ] = x ? "true" : "false";
                         }
                         break;
-                    
+
                     case Event::ParamType::String:
                     case Event::ParamType::Unknown:
                         {
@@ -301,7 +322,7 @@ void EventEditor::preconditions()
                             ImGui::InputText( util::format( "$##prec$param$", type.paramLabels[ i ], precNum, i ).c_str(), &prec.params[ iVal ][ 0 ], 31 );
                         }
                         break;
-                    
+
                     case Event::ParamType::EnumOne:
                         {
                             int selEnum = std::find( type.enumValues.begin(), type.enumValues.end(), prec.params[ iVal ] ) - type.enumValues.begin();
@@ -311,7 +332,7 @@ void EventEditor::preconditions()
                                 prec.params[ iVal ] = type.enumValues[ selEnum ];
                         }
                         break;
-                    
+
                     case Event::ParamType::EnumMany:
                         {
                             for ( std::size_t e = 0; e < type.enumValues.size(); ++e )
@@ -331,7 +352,7 @@ void EventEditor::preconditions()
                             }
                         }
                         break;
-                    
+
                     case Event::ParamType::Position:
                         {
                             sf::Vector2i x( util::fromString< int >( prec.params[ iVal ] ), util::fromString< int >( prec.params[ iVal + 1 ] ) );
@@ -366,7 +387,7 @@ void EventEditor::actors()
 {
     if ( active->id == -1 )
         return;
-    
+
     ImGui::SetNextWindowPos( ImVec2( 25, 375 ), ImGuiSetCond_Appearing );
     ImGui::SetNextWindowSize( ImVec2( 250, 200 ), ImGuiSetCond_Appearing );
     if ( ImGui::Begin( "Event Actors" ) )
@@ -396,7 +417,7 @@ void EventEditor::actors()
                 if ( mapActor )
                     mapActor->setFacing( actor.facing );
             }
-            
+
             if ( ImGui::Button( util::format( "Delete actor##actor$", actorNum ).c_str() ) )
             {
                 active->actors.erase( actorIt );
@@ -404,10 +425,10 @@ void EventEditor::actors()
                     editor.map.removeActor( actor.name.c_str() );
                 break;
             }
-            
+
             ImGui::Separator();
         }
-        
+
         if ( ImGui::Button( "New actor" ) )
         {
             active->actors.push_back( Event::Actor() );
@@ -428,20 +449,20 @@ void EventEditor::commands()
             Event::Command& command = ( * cmdIt );
             command.cmd.resize( 512, '\0' );
             ImGui::InputText( util::format( "Command##cmd$", cmdNum ).c_str(), &command.cmd[ 0 ], 511 );
-            
+
             if ( ImGui::Button( util::format( "Delete command##cmd$", cmdNum ).c_str() ) )
             {
                 active->commands.erase( cmdIt );
                 break;
             }
-            
+
             ImGui::Separator();
         }
-        
+
         if ( ImGui::Button( "New command" ) )
         {
             active->commands.push_back( Event::Command() );
-        } 
+        }
     }
     ImGui::End();
 }
@@ -452,18 +473,18 @@ void EventEditor::loadEventList( const std::string& map )
     events.clear();
     eventBranches.clear();
     active = nullptr;
-    
+
     xnb::File file;
     if ( !file.loadFromFile( ( fs::path( editor.config.getContentFolder() ) / "data" / "Events" / ( map + ".xnb" ) ).string() ) )
         return;
-    
+
     const xnb::DictionaryData* data = dynamic_cast< const xnb::DictionaryData* >( file.data.get() );
     if ( data == nullptr )
     {
         util::log( "Event data must be a dictionary! $\n", file.data->toString() );
         return;
     }
-    
+
     for ( const auto& pair : data->data )
     {
         const xnb::StringData* keyData = dynamic_cast< const xnb::StringData* >( pair.first.get() );
@@ -473,14 +494,14 @@ void EventEditor::loadEventList( const std::string& map )
             util::log( "Bad event data type? $ $\n", pair.first->toString(), pair.second->toString() );
             continue;
         }
-        
+
         Event::Data event = Event::Data::fromGameFormat( keyData->value, valueData->value );
         if ( event.id == -1 && event.branchName == "" )
         {
             util::log( "Bad event data? $ $\n", pair.first->toString(), pair.second->toString() );
             continue;
         }
-        
+
         if ( event.id != -1 )
         {
             events.insert( std::make_pair( event.id, event ) );
@@ -499,7 +520,7 @@ void EventEditor::reloadPreconditionTypes()
     for ( const auto& type : Event::PreconditionType::types )
     {
         precTypeLabels.push_back( type.second.label );
-        
+
         if ( type.second.enumValues.size() > 0 )
         {
             std::string str = "";
@@ -508,11 +529,11 @@ void EventEditor::reloadPreconditionTypes()
                 str += val + '\0';
             }
             str += '\0';
-            
+
             enumValuesStr[ type.second.id ] = str;
         }
     }
-    
+
     precTypeLabelsStr = "";
     for ( const std::string& label : precTypeLabels )
     {

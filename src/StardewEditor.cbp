@@ -24,9 +24,7 @@
 					<Add option="-lsfml-graphics-s-d" />
 					<Add option="-lsfml-window-s-d" />
 					<Add option="-lsfml-system-s-d" />
-					<Add option="-lboost_filesystem-d" />
-					<Add option="-lboost_system-d" />
-					<Add library="..\libmspack-lzx\libmspack-lzx-d.a" />
+					<Add option="-lmspack-lzx-d" />
 				</Linker>
 			</Target>
 			<Target title="Release">
@@ -42,6 +40,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
+					<Add option="-static" />
 					<Add option="-lsc0-xnb" />
 					<Add option="-lsc0-utility" />
 					<Add option="-lsfml-network-s" />
@@ -49,10 +48,7 @@
 					<Add option="-lsfml-graphics-s" />
 					<Add option="-lsfml-window-s" />
 					<Add option="-lsfml-system-s" />
-					<Add option="-static" />
-					<Add library="C:\Libraries\build\boost\boost\bin.v2\libs\filesystem\build\gcc-mingw-4.8.1\debug\link-static\libboost_filesystem-mgw48-d-1_54.a" />
-					<Add library="C:\Libraries\build\boost\boost\bin.v2\libs\system\build\gcc-mingw-4.8.1\release\link-static\libboost_system-mgw48-1_54.a" />
-					<Add library="..\libmspack-lzx\libmspack-lzx.a" />
+					<Add option="-lmspack-lzx" />
 				</Linker>
 			</Target>
 		</Build>
@@ -68,6 +64,8 @@
 			<Add option="-lflac" />
 			<Add option="-lvorbisenc" />
 			<Add option="-lvorbisfile" />
+			<Add option="-lboost_filesystem" />
+			<Add option="-lboost_system" />
 			<Add option="-lvorbis" />
 			<Add option="-logg" />
 			<Add option="-lfreetype" />
