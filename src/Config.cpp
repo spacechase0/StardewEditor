@@ -125,6 +125,15 @@ void Config::reset()
         content = "C:\\Program Files (x86)\\GalaxyClient\\Games\\Stardew Valley\\Content";
     else if ( fs::exists( "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Stardew Valley\\Content" ) )
         content = "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Stardew Valley\\Content";
+    else
+    {
+        std::string steam = getRegistryValue( "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Steam App 413150", "InstallLocation" );
+        std::string gog = getRegistryValue( "SOFTWARE\\WOW6432Node\\GOG.com\\Games\\1453375253", "PATH" );
+        if ( steam != "" && fs::exists( steam ) )
+            content = steam;
+        else if ( gog != "" && fs::exists( gog ) )
+            content = gog;
+    }
     #elif defined( SFML_SYSTEM_MACOS )
         std::string home = std::getenv( "HOME" );
         if ( fs::exists( "/Applications/Stardew Valley.app/Contents/MacOS/Content" ) )

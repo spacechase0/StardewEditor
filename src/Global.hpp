@@ -15,4 +15,8 @@ namespace fs = boost::filesystem;
 
 constexpr unsigned int TILE_SIZE = 16;
 
+#ifdef SFML_SYSTEM_WINDOWS
+std::string getRegistryValue( const std::string& key, const std::string& value );
+#endif
+
 #endif // GLOBAL_HPP
