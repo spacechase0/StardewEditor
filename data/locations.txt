@@ -9,7 +9,7 @@ BathHouse_WomensLocker
 Beach
 Blacksmith
 BugLand
-BugStop
+BusStop
 Cellar
 Club
 CommunityCenter
