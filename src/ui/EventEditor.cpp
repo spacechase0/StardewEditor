@@ -455,6 +455,16 @@ void EventEditor::commands()
                 active->commands.erase( cmdIt );
                 break;
             }
+            if ( cmdIt != active->commands.begin() && ImGui::Button( util::format( "Up##cmd$", cmdNum ).c_str() ) )
+            {
+                auto tmpIt = cmdIt; --tmpIt;
+                std::swap( ( * tmpIt ), ( * cmdIt ) );
+            }
+            auto tmpIt = cmdIt; ++tmpIt;
+            if ( tmpIt != active->commands.end() && ImGui::Button( util::format( "Down##cmd$", cmdNum ).c_str() ) )
+            {
+                std::swap( ( * tmpIt ), ( * cmdIt ) );
+            }
 
             ImGui::Separator();
         }
