@@ -9,6 +9,7 @@
 #include <util/String.hpp>
 
 #include "Editor.hpp"
+#include "ui/DialogueEditor.hpp"
 #include "ui/EventEditor.hpp"
 #include "ui/MapDisplay.hpp"
 #include "ui/SoundPlayer.hpp"
@@ -21,7 +22,7 @@ Ui::Ui( Editor& theEditor )
 void Ui::update()
 {
     ImGui::SFML::Update( editor.window, delta.restart() );
-    
+
     mainMenu();
     other();
     for ( auto& module : modules )
@@ -39,12 +40,13 @@ void Ui::render( sf::RenderWindow& window )
 {
     if ( firstUpdate )
     {
-        modules.push_back( std::unique_ptr< UiModule >( mapDisplay  = new MapDisplay ( editor, ( * this ) ) ) );
-        modules.push_back( std::unique_ptr< UiModule >( eventEditor = new EventEditor( editor, ( * this ) ) ) );
-        modules.push_back( std::unique_ptr< UiModule >( soundPlayer = new SoundPlayer( editor, ( * this ) ) ) );
+        modules.push_back( std::unique_ptr< UiModule >( mapDisplay     = new MapDisplay ( editor, ( * this ) ) ) );
+        modules.push_back( std::unique_ptr< UiModule >( eventEditor    = new EventEditor( editor, ( * this ) ) ) );
+        modules.push_back( std::unique_ptr< UiModule >( dialogueEditor = new DialogueEditor( editor, ( * this ) ) ) );
+        modules.push_back( std::unique_ptr< UiModule >( soundPlayer    = new SoundPlayer( editor, ( * this ) ) ) );
         firstUpdate = false;
     }
-    
+
     ImGui::Render();
 }
 
@@ -71,7 +73,7 @@ void Ui::mainMenu()
     {
         for ( auto& module : modules )
             module->menu();
-        
+
         if ( ImGui::BeginMenu( "Other" ) )
         {
             bool wasShowingConfig = showingConfig;
@@ -80,15 +82,15 @@ void Ui::mainMenu()
             {
                 editor.config.saveToFile( Editor::CONFIG_FILE );
             }
-            
+
             bool selected = exported != "";
             ImGui::MenuItem( "Show export window", nullptr, &selected, selected );
             if ( !selected )
                 exported = "";
-            
+
             ImGui::EndMenu();
         }
-        
+
         ImGui::EndMainMenuBar();
     }
 }
@@ -106,7 +108,7 @@ void Ui::other()
         }
         ImGui::End();
     }
-    
+
     if ( showingConfig )
     {
         if ( ImGui::Begin( "Configuration" ) )

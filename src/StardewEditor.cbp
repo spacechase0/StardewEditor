@@ -107,6 +107,8 @@
 		<Unit filename="integration/ProtocolPacket.cpp" />
 		<Unit filename="integration/ProtocolPacket.hpp" />
 		<Unit filename="main.cpp" />
+		<Unit filename="ui/DialogueEditor.cpp" />
+		<Unit filename="ui/DialogueEditor.hpp" />
 		<Unit filename="ui/EventEditor.cpp" />
 		<Unit filename="ui/EventEditor.hpp" />
 		<Unit filename="ui/MapDisplay.cpp" />
