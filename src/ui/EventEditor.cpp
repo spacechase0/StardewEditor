@@ -455,17 +455,25 @@ void EventEditor::commands()
                 active->commands.erase( cmdIt );
                 break;
             }
-            if ( cmdIt != active->commands.begin() && ImGui::Button( util::format( "Up##cmd$", cmdNum ).c_str() ) )
+            ImGui::SameLine();
+            if ( cmdIt != active->commands.begin() )
             {
-                auto tmpIt = cmdIt; --tmpIt;
-                std::swap( ( * tmpIt ), ( * cmdIt ) );
+                if ( ImGui::Button( util::format( "Up##cmd$", cmdNum ).c_str(), ImVec2( 50, 0 ) ) )
+                {
+                    auto tmpIt = cmdIt; --tmpIt;
+                    std::swap( ( * tmpIt ), ( * cmdIt ) );
+                }
             }
+            else ImGui::Dummy( ImVec2( 50, 0 ) );
             auto tmpIt = cmdIt; ++tmpIt;
-            if ( tmpIt != active->commands.end() && ImGui::Button( util::format( "Down##cmd$", cmdNum ).c_str() ) )
+            if ( tmpIt != active->commands.end() )
             {
-                std::swap( ( * tmpIt ), ( * cmdIt ) );
+                ImGui::SameLine();
+                if ( ImGui::Button( util::format( "Down##cmd$", cmdNum ).c_str(), ImVec2( 50, 0 ) ) )
+                {
+                    std::swap( ( * tmpIt ), ( * cmdIt ) );
+                }
             }
-
             ImGui::Separator();
         }
 
