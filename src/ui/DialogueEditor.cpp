@@ -37,29 +37,20 @@ void DialogueEditor::menu()
         ImGui::MenuItem( "Export - TODO", nullptr );
 
         ImGui::MenuItem( "", nullptr );
-        if ( ImGui::BeginMenu( "Dialogue Files" ) )
+        for ( auto& dialogue : dialogueFiles )
         {
-            for ( auto& dialogue : dialogueFiles )
+            bool selected = currentDialogueFile == &dialogue;
+            bool wasSelected = selected;
+            ImGui::MenuItem( dialogue.c_str(), nullptr, &selected, true );
+            if ( selected )
             {
-                bool selected = currentDialogueFile == &dialogue;
-                bool wasSelected = selected;
-                ImGui::MenuItem( dialogue.c_str(), nullptr, &selected, true );
-                if ( selected )
+                currentDialogueFile = &dialogue;
+                if ( !wasSelected )
                 {
-                    currentDialogueFile = &dialogue;
-                    if ( !wasSelected )
-                    {
-                        // TODO
-                    }
+                    // TODO
                 }
             }
-
-            ImGui::EndMenu();
         }
-
-        ImGui::MenuItem( "", nullptr );
-
-        // ...
 
         ImGui::EndMenu();
     }
